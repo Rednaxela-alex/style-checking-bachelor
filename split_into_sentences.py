@@ -7,7 +7,7 @@ acronyms = "([A-Z][.][A-Z][.](?:[A-Z][.])?)"
 websites = "[.](com|net|org|io|gov|me|edu)"
 digits = "([0-9])"
 
-def split_into_sentences(text):
+def par_into_sentences(text):
     text = " " + text + "  "
     text = text.replace("\n"," ")
     text = re.sub(prefixes,"\\1<prd>",text)

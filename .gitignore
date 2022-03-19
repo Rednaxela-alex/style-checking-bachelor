@@ -1,5 +1,6 @@
 input_dir/
 output_dir/
 *.csv
+*.xlsx
 .vscode
 __pycache__/

@@ -3,7 +3,8 @@ from warnings import catch_warnings
 import torch 
 from torch.nn.functional import normalize
 from pytorch_pretrained_bert import BertTokenizer, BertModel, BertForMaskedLM
-from SplitIntoSentences import split_into_sentences
+from SplitIntoSentences import par_into_sentences
+from generate_embeddings import paragraph_to_sentences
 import json
 import numpy as np 
 import time
@@ -83,7 +84,7 @@ def generate_embeddings_narrow(corpora, inputpath, outputpath):
         previous_para_length= None
 
         for paragraph_index, paragraph in enumerate(paragraphs):
-            sentences = split_into_sentences(paragraph)
+            sentences = par_into_sentences(paragraph)
 
             current_para_embeddings= torch.zeros(768)
             if torch.cuda.is_available():
@@ -166,7 +167,6 @@ def my_embeddings_generater_for_training(dataset, input_path, output_path):
     for document_path in dataset:
         #print(document_path)
         document_id= document_path[len(input_path)+9:-4] #for problem-*.txt
-        print(document_id)
         ground_truth_document_path = input_path + '/truth-problem-' + document_id + '.json'
 
         with open(document_path, encoding="utf8") as file:
@@ -177,7 +177,7 @@ def my_embeddings_generater_for_training(dataset, input_path, output_path):
         #print(document_id + '\n' + document)
         labels = json.loads(truth_document)['changes']
         
-
+        
         if not document or not document_id:
             continue
 
@@ -185,16 +185,20 @@ def my_embeddings_generater_for_training(dataset, input_path, output_path):
         paragraphs_embeddings= []
         
         paragraphs= document.split('\n')
+        print(paragraphs)
         
         previous_para_embeddings= None
         previous_para_length= None
 
         
         for paragraph_index, paragraph in enumerate(paragraphs):
-            sentences = split_into_sentences(paragraph)
+            sentences = par_into_sentences(paragraph)
+            
             
             if(len(sentences)==0):
                 sentences.append(paragraph)
+            print(sentences)
+            continue
             current_para_embeddings= torch.zeros(768)
             if torch.cuda.is_available():
                 current_para_embeddings= current_para_embeddings.cuda()
@@ -223,7 +227,7 @@ def my_embeddings_generater_for_training(dataset, input_path, output_path):
 
             
             del current_para_embeddings, current_para_length
-
+        return
         del previous_para_embeddings, previous_para_length
        
         try:   

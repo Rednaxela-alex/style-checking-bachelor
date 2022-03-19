@@ -13,6 +13,9 @@ requests = "*"
 matplotlib = "*"
 pandas = "*"
 imbalanced-learn = "*"
+natsort = "*"
+nltk = "*"
+textstat = "*"
 
 [dev-packages]
 

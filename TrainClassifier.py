@@ -1,18 +1,7 @@
 from sklearn.pipeline import Pipeline
-from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
-from sklearn.linear_model import LogisticRegression
-from sklearn.svm import LinearSVC
-from sklearn.tree import DecisionTreeClassifier
-from sklearn.naive_bayes import GaussianNB
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.gaussian_process import GaussianProcessClassifier
-from sklearn.gaussian_process.kernels import RBF
-from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
-from sklearn.neural_network import MLPClassifier
-import numpy as np
 import glob
-import matplotlib.pyplot as plt
 import pandas as pd
 from imblearn.under_sampling import RandomUnderSampler
 from imblearn.over_sampling import SMOTE
@@ -24,7 +13,7 @@ from sklearn.metrics import f1_score
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import recall_score
 from sklearn.metrics import precision_score
-from numpy import mean
+import numpy as np
 from sklearn.metrics import make_scorer
 from sklearn.model_selection import cross_validate
 from sklearn.preprocessing import StandardScaler
@@ -41,9 +30,14 @@ try:
     
     X = np.genfromtxt('X_dataset2_train.csv', delimiter=',')
     y = np.genfromtxt('y_dataset2_train.csv', delimiter=',')
-    clf = RandomForestClassifier()
+
+
     
 
+    clf_rfc = RandomForestClassifier()
+    clf_svc = SVC()
+    
+    """
     X_val = np.genfromtxt('X_dataset2_val.csv', delimiter=',')
     y_val = np.genfromtxt('y_dataset2_val.csv', delimiter=',')
 
@@ -132,7 +126,7 @@ try:
     print("Ground Truth: ", Counter(y_val))
 
 
-    
+    """
     
     del dataset_train, dataset_val
     

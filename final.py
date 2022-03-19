@@ -12,7 +12,7 @@ import numpy as np
 #output_dir= sys.argv[2]
 
 
-input_path_train_datset1= './input_dir' + '/PAN22/dataset1/train'
+input_path_train_datset1= './input_dir' + '/PAN22/dataset1_test/train'
 dataset_train_dataset1= glob.glob(input_path_train_datset1+'/problem-*.txt')
 input_path_val_datset1= './input_dir' + '/PAN22/dataset1/validation'
 dataset_val_dataset1= glob.glob(input_path_val_datset1+'/problem-*.txt')
@@ -35,6 +35,8 @@ if(not(os.path.exists(output_path_narrow))):
 #if(not(os.path.exists(output_path_wide))):
 #    os.mkdir(output_path_wide)
 
+my_embeddings_generater_for_training(dataset_train_dataset1, input_path_train_datset1, output_path_narrow)
+"""
 
 try:
     print("Creating Validation Embeddings dataset 1")
@@ -75,3 +77,5 @@ except Exception as e:
     pass
 
 print('finished')
+
+"""

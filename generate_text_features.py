@@ -8,10 +8,21 @@ Date: Jul 2, 2019
 Availability: https://github.com/chzuo/PAN_2019
 """
 
+"""
+This code is adapted from the source code used in the paper
+'Multi-label Style Change Detection by Solving a Binary Classification Problem---Notebook for PAN at CLEF 2021'
+
+Title: Multi-label Style Change Detection by Solving a Binary Classification Problem---Notebook for PAN at CLEF 2021
+Authors: Eivind Strom
+Date: 2021
+Availability: https://github.com/eivistr/pan21-style-change-detection-stacking-ensemble
+"""
+
 from utilities import load_documents
 import json
 from nltk.tokenize import word_tokenize, sent_tokenize
 from nltk import pos_tag
+import nltk
 import numpy as np
 import pickle
 import textstat
@@ -38,8 +49,9 @@ def count_occurence_phrase(phrase_list, para):
 def extract_features(document):
     feature_all = []
     for para in document:
-
+        
         sent_list = sent_tokenize(para)
+       
         word_dict = {}
 
         sent_length_list = [0, 0, 0, 0, 0, 0]  # 0-10,10-20,20-30,30-40,40-50,>50
@@ -150,62 +162,76 @@ def generate_features(documents):
             features_per_paragraph.append(para_features)
     return np.array(features_per_document), np.array(features_per_paragraph, dtype=object)
 
-# Load documents
-train_dataset1_docs, train_dataset1_doc_ids = load_documents('train_dataset1')
-train_dataset2_docs, train_dataset2_doc_ids = load_documents('train_dataset2')
-train_dataset3_docs, train_dataset3_doc_ids = load_documents('train_dataset3')
-val_dataset1_docs, val_dataset1_doc_ids = load_documents('val_dataset1')
-val_dataset2_docs, val_dataset2_doc_ids = load_documents('val_dataset2')
-val_dataset3_docs, val_dataset3_doc_ids = load_documents('val_dataset3')
+def main():
 
-# NB! Generating embeddings takes a long time
-train_dataset1_doc_textf, train_dataset1_par_textf = generate_features(train_dataset1_docs)
-train_dataset2_doc_textf, train_dataset2_par_textf = generate_features(train_dataset2_docs)
-train_dataset3_doc_textf, train_dataset3_par_textf = generate_features(train_dataset3_docs)
-val_dataset1_doc_textf, val_dataset1_par_textf = generate_features(val_dataset1_docs)
-val_dataset2_doc_textf, val_dataset2_par_textf = generate_features(val_dataset2_docs)
-val_dataset3_doc_textf, val_dataset3_par_textf = generate_features(val_dataset3_docs)
+    # Load documents
+    train_dataset1_docs, train_dataset1_doc_ids = load_documents('train_dataset1')
+    train_dataset2_docs, train_dataset2_doc_ids = load_documents('train_dataset2')
+    train_dataset3_docs, train_dataset3_doc_ids = load_documents('train_dataset3')
+    val_dataset1_docs, val_dataset1_doc_ids = load_documents('val_dataset1')
+    val_dataset2_docs, val_dataset2_doc_ids = load_documents('val_dataset2')
+    val_dataset3_docs, val_dataset3_doc_ids = load_documents('val_dataset3')
 
-# Save results
-timestring = time.strftime("%Y%m%d-%H%M")
+    # Save results
+    
+    if not os.path.exists('./features/dataset1'):
+        os.makedirs('./features/dataset1')
+    if not os.path.exists('./features/dataset2'):
+        os.makedirs('./features/dataset2')
+    if not os.path.exists('./features/dataset3'):
+        os.makedirs('./features/dataset3')
 
-if not os.path.exists('./features'):
-    os.makedirs('./features')
+    # NB! Generating features takes a long time
+    train_dataset1_doc_textf, train_dataset1_par_textf = generate_features(train_dataset1_docs)
+    with open('./features/dataset1/' + 'doc_textf_train.pickle', 'wb') as handle:
+        pickle.dump(train_dataset1_doc_textf, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
-with open('./features/dataset1/' + timestring + '_doc_textf_train.pickle', 'wb') as handle:
-    pickle.dump(train_dataset1_doc_textf, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    with open('./features/dataset1/' + 'par_textf_train.pickle', 'wb') as handle:
+        pickle.dump(train_dataset1_par_textf, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
-with open('./features/dataset1/' + timestring + '_par_textf_train.pickle', 'wb') as handle:
-    pickle.dump(train_dataset1_par_textf, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    train_dataset2_doc_textf, train_dataset2_par_textf = generate_features(train_dataset2_docs)
+    with open('./features/dataset2/' + 'doc_textf_train.pickle', 'wb') as handle:
+        pickle.dump(train_dataset2_doc_textf, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
-with open('./features/dataset2/' + timestring + '_doc_textf_train.pickle', 'wb') as handle:
-    pickle.dump(train_dataset2_doc_textf, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    with open('./features/dataset2/' + 'par_textf_train.pickle', 'wb') as handle:
+        pickle.dump(train_dataset2_par_textf, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
-with open('./features/dataset2/' + timestring + '_par_textf_train.pickle', 'wb') as handle:
-    pickle.dump(train_dataset2_par_textf, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    train_dataset3_doc_textf, train_dataset3_par_textf = generate_features(train_dataset3_docs)
+    with open('./features/dataset3/' + 'doc_textf_train.pickle', 'wb') as handle:
+        pickle.dump(train_dataset3_doc_textf, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
-with open('./features/dataset3/' + timestring + '_doc_textf_train.pickle', 'wb') as handle:
-    pickle.dump(train_dataset3_doc_textf, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    with open('./features/dataset3/' + 'par_textf_train.pickle', 'wb') as handle:
+        pickle.dump(train_dataset3_par_textf, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    val_dataset1_doc_textf, val_dataset1_par_textf = generate_features(val_dataset1_docs)
+    with open('./features/dataset1/' + 'doc_textf_val.pickle', 'wb') as handle:
+        pickle.dump(val_dataset1_doc_textf, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
-with open('./features/dataset3/' + timestring + '_par_textf_train.pickle', 'wb') as handle:
-    pickle.dump(train_dataset3_par_textf, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    with open('./features/dataset1/' + 'par_textf_val.pickle', 'wb') as handle:
+        pickle.dump(val_dataset1_par_textf, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+    val_dataset2_doc_textf, val_dataset2_par_textf = generate_features(val_dataset2_docs)
+    with open('./features/dataset2/' + 'doc_textf_val.pickle', 'wb') as handle:
+        pickle.dump(val_dataset2_doc_textf, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+    with open('./features/dataset2/' + 'par_textf_val.pickle', 'wb') as handle:
+        pickle.dump(val_dataset2_par_textf, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+    val_dataset3_doc_textf, val_dataset3_par_textf = generate_features(val_dataset3_docs)
+    with open('./features/dataset3/' + 'doc_textf_val.pickle', 'wb') as handle:
+        pickle.dump(val_dataset3_doc_textf, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+    with open('./features/dataset3/' + 'par_textf_val.pickle', 'wb') as handle:
+        pickle.dump(val_dataset3_par_textf, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 
-with open('./features/dataset1/' + timestring + '_doc_textf_val.pickle', 'wb') as handle:
-    pickle.dump(val_dataset1_doc_textf, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    
+    
+    
 
-with open('./features/dataset1/' + timestring + '_par_textf_val.pickle', 'wb') as handle:
-    pickle.dump(val_dataset1_par_textf, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
-with open('./features/dataset2/' + timestring + '_doc_textf_val.pickle', 'wb') as handle:
-    pickle.dump(val_dataset2_doc_textf, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    
+    
+    
 
-with open('./features/dataset2/' + timestring + '_par_textf_val.pickle', 'wb') as handle:
-    pickle.dump(val_dataset2_par_textf, handle, protocol=pickle.HIGHEST_PROTOCOL)
-
-with open('./features/dataset3/' + timestring + '_doc_textf_val.pickle', 'wb') as handle:
-    pickle.dump(val_dataset3_doc_textf, handle, protocol=pickle.HIGHEST_PROTOCOL)
-
-with open('./features/dataset3/' + timestring + '_par_textf_val.pickle', 'wb') as handle:
-    pickle.dump(val_dataset3_par_textf, handle, protocol=pickle.HIGHEST_PROTOCOL)
-
+if __name__ == '__main__':
+    main()

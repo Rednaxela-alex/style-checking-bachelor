@@ -4,3 +4,4 @@ output_dir/
 *.xlsx
 .vscode
 __pycache__/
+features/

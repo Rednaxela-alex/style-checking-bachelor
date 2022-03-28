@@ -16,6 +16,8 @@ imbalanced-learn = "*"
 natsort = "*"
 nltk = "*"
 textstat = "*"
+transformers = "*"
+lightgbm = "*"
 
 [dev-packages]
 

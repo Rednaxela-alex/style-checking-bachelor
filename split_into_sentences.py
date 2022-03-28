@@ -4,13 +4,17 @@ prefixes = "(Mr|St|Mrs|Ms|Dr|Prof|Capt|Cpt|Lt|Mt)[.]"
 suffixes = "(Inc|Ltd|Jr|Sr|Co)"
 starters = "(Mr|Mrs|Ms|Dr|He\s|She\s|It\s|They\s|Their\s|Our\s|We\s|But\s|However\s|That\s|This\s|Wherever)"
 acronyms = "([A-Z][.][A-Z][.](?:[A-Z][.])?)"
-websites = "[.](com|net|org|io|gov|me|edu)"
+websites = "[.](com|net|org|io|gov|me|edu|log)"
+www = "(www)[.]"
+http = "(http|https)[:]"
 digits = "([0-9])"
 
 def par_into_sentences(text):
     text = " " + text + "  "
     text = text.replace("\n"," ")
     text = re.sub(prefixes,"\\1<prd>",text)
+    text = re.sub(http,"\\1<prd>", text)
+    text = re.sub(www,"\\1<prd>", text)
     text = re.sub(websites,"<prd>\\1",text)
     if "Ph.D" in text: text = text.replace("Ph.D.","Ph<prd>D<prd>")
     text = re.sub("\s" + alphabets + "[.] "," \\1<prd> ",text)

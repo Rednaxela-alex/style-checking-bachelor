@@ -1,7 +1,8 @@
-input_dir/
-output_dir/
-*.csv
+input_dir*/
+output_dir*/
+evaluation/
 *.xlsx
 .vscode
 __pycache__/
 features/
+saved_models/

@@ -110,12 +110,12 @@ def generate_embeddings(documents):
 def main():
 
     # Load documents
-    #train_dataset1_docs, train_dataset1_doc_ids = load_documents('train_dataset1')
-    #train_dataset2_docs, train_dataset2_doc_ids = load_documents('train_dataset2')
-    #train_dataset3_docs, train_dataset3_doc_ids = load_documents('train_dataset3')
+    train_dataset1_docs, train_dataset1_doc_ids = load_documents('train_dataset1')
+    train_dataset2_docs, train_dataset2_doc_ids = load_documents('train_dataset2')
+    train_dataset3_docs, train_dataset3_doc_ids = load_documents('train_dataset3')
     val_dataset1_docs, val_dataset1_doc_ids = load_documents('val_dataset1')
-    #val_dataset2_docs, val_dataset2_doc_ids = load_documents('val_dataset2')
-    #val_dataset3_docs, val_dataset3_doc_ids = load_documents('val_dataset3')
+    val_dataset2_docs, val_dataset2_doc_ids = load_documents('val_dataset2')
+    val_dataset3_docs, val_dataset3_doc_ids = load_documents('val_dataset3')
 
     # NB! Generating embeddings takes a long time
 
@@ -130,7 +130,7 @@ def main():
         os.makedirs('./features/dataset3')
         
    
-    """
+    
     train_dataset1_doc_emb, train_dataset1_par_emb = generate_embeddings(train_dataset1_docs)
     with open('./features/dataset1/' + 'doc_emb_train.pickle', 'wb') as handle:
         pickle.dump(train_dataset1_doc_emb, handle, protocol=pickle.HIGHEST_PROTOCOL)
@@ -152,14 +152,14 @@ def main():
 
     with open('./features/dataset3/' + 'par_emb_train.pickle', 'wb') as handle:
         pickle.dump(train_dataset3_par_emb, handle, protocol=pickle.HIGHEST_PROTOCOL)
-    """
+    
     val_dataset1_doc_emb, val_dataset1_par_emb = generate_embeddings(val_dataset1_docs)
     with open('./features/dataset1/' + 'doc_emb_val.pickle', 'wb') as handle:
         pickle.dump(val_dataset1_doc_emb, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
     with open('./features/dataset1/' + 'par_emb_val.pickle', 'wb') as handle:
         pickle.dump(val_dataset1_par_emb, handle, protocol=pickle.HIGHEST_PROTOCOL)
-    """
+    
     val_dataset2_doc_emb, val_dataset2_par_emb = generate_embeddings(val_dataset2_docs)
     with open('./features/dataset2/' + 'doc_emb_val.pickle', 'wb') as handle:
         pickle.dump(val_dataset2_doc_emb, handle, protocol=pickle.HIGHEST_PROTOCOL)
@@ -174,7 +174,7 @@ def main():
 
     with open('./features/dataset3/' + 'par_emb_val.pickle', 'wb') as handle:
         pickle.dump(val_dataset3_par_emb, handle, protocol=pickle.HIGHEST_PROTOCOL)
-    """
+    
     
 
     

@@ -18,6 +18,7 @@ nltk = "*"
 textstat = "*"
 transformers = "*"
 lightgbm = "*"
+optuna = "*"
 
 [dev-packages]
 

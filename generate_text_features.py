@@ -49,7 +49,6 @@ def count_occurence_phrase(phrase_list, para):
 def extract_features(document):
     feature_all = []
     for para in document:
-        
         sent_list = sent_tokenize(para)
        
         word_dict = {}

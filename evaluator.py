@@ -259,9 +259,8 @@ def main():
     task2_solutions = read_solution_files(os.path.join(args.predictions, 'dataset2'))
     task2_truth = read_ground_truth_files(os.path.join(args.truth, 'dataset2'))
     task2_f1 = compute_score_multiple_predictions(task2_truth, task2_solutions, 'paragraph-authors', labels=[1,2,3,4,5])
-
     task2_jer, task2_der = compute_secondary_metrics(ref_list=task2_truth, sys_list=task2_solutions, task_key='paragraph-authors', reverse=True)
-
+    
     task3_solutions = read_solution_files(os.path.join(args.predictions, 'dataset3'))
     task3_truth = read_ground_truth_files(os.path.join(args.truth, 'dataset3'))
     task3_f1 = compute_score_multiple_predictions(task3_truth, task3_solutions, 'changes', labels=[0, 1])

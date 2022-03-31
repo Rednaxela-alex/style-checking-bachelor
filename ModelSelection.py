@@ -146,7 +146,8 @@ def main():
     model_table_dataset1_SMOTE_textf.to_csv("./evaluation/model_evaluation_dataset1_smote_textf.csv")
 
     model_table_dataset1_SMOTE_comb = models_evaluation(X_smote_comb, y_smote_comb,3)
-    model_table_dataset1_SMOTE_comb.to_csv("./evaluation/model_evaluation_dataset1_smote_comb.csv")   
+    model_table_dataset1_SMOTE_comb.to_csv("./evaluation/model_evaluation_dataset1_smote_comb.csv") 
+
 
     #evaluation classifiers on dataset 2 with embeddings generatet with BERT, textfeatures and a combination
     x_train_emb_dataset2, y_train_dataset2, _, _ = task2_load_cases(feature="emb")

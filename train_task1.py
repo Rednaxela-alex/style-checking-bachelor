@@ -8,18 +8,50 @@ import pickle
 from imblearn.over_sampling import SMOTE
 
 
-lgb_params_textf = {
-    'seed': 0,
-    'objective': 'binary',
-    'verbose': -1,
-    'lambda_l1': 6.0820166772618134e-06,
-    'lambda_l2': 0.034450476711287877,
-    'num_leaves': 31,
-    'feature_fraction': 0.9840000000000001,
-    'bagging_fraction': 1.0,
-    'bagging_freq': 0,
-    'min_child_samples': 20,
-    'is_unbalance': 'true'}
+lgb_params_textf ={'seed': 0,
+'objective': 'binary',
+'boosting_type': 'gbdt',
+'verbose': -1,
+'feature_pre_filter': False,
+'lambda_l1': 1.4206133874048629e-07,
+'lambda_l2': 2.396038769472299e-07,
+'num_leaves': 248,
+'feature_fraction': 1.0,
+'bagging_fraction': 0.9155944058181463,
+'bagging_freq': 1,
+'min_child_samples': 20,
+'num_iterations': 2500,
+'early_stopping_round': 100}
+
+lgb_params_emb = {'seed': 0,
+'objective': 'binary',
+'boosting_type': 'gbdt',
+'verbose': -1,
+'feature_pre_filter': False,
+'lambda_l1': 0.0,
+'lambda_l2': 0.0,
+'num_leaves': 9, 
+'feature_fraction': 0.8999999999999999,
+'bagging_fraction': 1.0,
+'bagging_freq': 0,
+'min_child_samples': 20,
+'num_iterations': 2500,
+'early_stopping_round': 100}
+
+lgb_params_comb = {'seed': 0,
+'objective': 'binary',
+'boosting_type': 'gbdt',
+'verbose': -1,
+'feature_pre_filter': False,
+'lambda_l1': 8.342631883442759e-07, 
+'lambda_l2': 1.1821880623746825e-08, 
+'num_leaves': 233,
+'feature_fraction': 0.8999999999999999,
+'bagging_fraction': 1.0,
+'bagging_freq': 0,
+'min_child_samples': 20,
+'num_iterations': 2500,
+'early_stopping_round': 100}
 
 
 def task1_lgbm():

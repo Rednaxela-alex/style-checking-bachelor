@@ -34,7 +34,7 @@ TRAIN_FOLDER_DATASET2 = "./input_dir/dataset2/train/"
 VAL_FOLDER_DATASET2 = "./input_dir/dataset2/validation/"
 TEST_FOLDER_DATASET2 = "./input_dir/dataset2/test/"
 TRAIN_FOLDER_DATASET3 = "./input_dir/dataset3/train/"
-VAL_FOLDER_DATASET3 = "./input_dir/dataset2/validation/"
+VAL_FOLDER_DATASET3 = "./input_dir/dataset3/validation/"
 TEST_FOLDER_DATASET3 = "./input_dir/dataset3/test/"
 
 PAR_EMB_TRAIN_FOR_TASK1 = './features/dataset1/par_emb_train.pickle'
@@ -237,7 +237,6 @@ def task2_load_cases(feature, shuffle=False, seed=0):
 def task3_load_cases(feature, shuffle=False, seed=0):
     """Utility function for loading binary cases for task 2.
     Specify 'emb' or 'textf' feature set."""
-
     if feature == "emb":
         path_train = PAR_EMB_TRAIN_FOR_TASK3
         path_val = PAR_EMB_VAL_FOR_TASK3
@@ -279,7 +278,6 @@ def _organize_parchange_embeddings(par_embeddings, labels_change):
 
     for i in range(n):
         n_labels = len(labels_change[i])
-
         for j in range(n_labels):
             idx1 = j        # Index of current paragraph
             idx2 = j + 1    # Index of following paragraph
@@ -297,10 +295,8 @@ def _organize_parchange_textf(paragraph_textf, labels_change):
     assert len(paragraph_textf) == len(labels_change)
     n = len(paragraph_textf)
     features_flat, labels_flat = [], []
-
     for i in range(n):
         n_labels = len(labels_change[i])
-
         for j in range(n_labels):
             idx1 = j        # Index of current paragraph
             idx2 = j + 1    # Index of following paragraph
@@ -358,6 +354,7 @@ def _organize_authorship_textf(paragraph_textf, labels_paragraph_author):
     of binary cases. Used in task 3."""
 
     assert len(paragraph_textf) == len(labels_paragraph_author)
+    
     labels, paragraph_pairs = _map_authorhip_to_paragraphs(labels_paragraph_author)
     n = len(paragraph_textf)
     features_flat, labels_flat = [], []
@@ -367,8 +364,8 @@ def _organize_authorship_textf(paragraph_textf, labels_paragraph_author):
 
         for j in range(n_labels):
             idx1 = paragraph_pairs[i][j][0]  # Index of first paragraph
-            idx2 = paragraph_pairs[i][j][1]  # Index of second paragraph
-            features_flat.append(np.append(paragraph_textf[i][idx1], paragraph_textf[i][idx2]))  # append
+            idx2 = paragraph_pairs[i][j][1] 
+            features_flat.append(np.append(paragraph_textf[i][idx1], paragraph_textf[i][idx2]))
             labels_flat.append(labels[i][j])
     return np.array(features_flat), np.array(labels_flat)
 
@@ -388,7 +385,7 @@ def task3_parchange_predictions(task3_model, par_emb, par_textf):
 
         emb = []
         textf = []
-        for i in range(n_par - 1):
+        for i in range(n_par):
             idx1 = i        # Index of current paragraph
             idx2 = i + 1    # Index of following paragraph
 

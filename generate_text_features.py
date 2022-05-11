@@ -84,7 +84,7 @@ def extract_features(document):
                     pos_tag_list[10] += 1
                 if len(word) >= 8:
                     pos_tag_list[11] += 1
-                elif len(word) in [2, 3, 4]:
+                elif len(word) in [1,2,3]:
                     pos_tag_list[12] += 1
                 if word.isupper():
                     pos_tag_list[13] += 1

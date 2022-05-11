@@ -125,7 +125,7 @@ def main():
         os.makedirs('./evaluation')
 
 
-    x_train_emb_dataset1, y_train_dataset1, _,_  = task1_load_cases_comparing_each_paragraph(feature="emb")
+    """x_train_emb_dataset1, y_train_dataset1, _,_  = task1_load_cases_comparing_each_paragraph(feature="emb")
     x_train_textf_dataset1,_ , _, _ = task1_load_cases_comparing_each_paragraph(feature="textf")
     x_train_combined_dataset1 = np.append(x_train_textf_dataset1, x_train_emb_dataset1, axis=1)
 
@@ -162,7 +162,7 @@ def main():
     model_table_dataset2_textf.to_csv("./evaluation/model_evaluation_dataset2_textf.csv")
     
     model_table_dataset2_combined = models_evaluation(x_train_combined_dataset2,y_train_dataset2,3)
-    model_table_dataset2_combined.to_csv("./evaluation/model_evaluation_dataset2_combined.csv")
+    model_table_dataset2_combined.to_csv("./evaluation/model_evaluation_dataset2_combined.csv")"""
     
 
     #evaluation classifiers on dataset 3 with embeddings generatet with BERT, textfeatures and a combination

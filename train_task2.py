@@ -12,18 +12,50 @@ from imblearn.over_sampling import SMOTE
 from sklearn.preprocessing import StandardScaler
 
 
-lgb_params_textf = {
-    'seed': 0,
-    'objective': 'binary',
-    'verbose': -1,
-    'lambda_l1': 6.0820166772618134e-06,
-    'lambda_l2': 0.034450476711287877,
-    'num_leaves': 31,
-    'feature_fraction': 0.9840000000000001,
-    'bagging_fraction': 1.0,
-    'bagging_freq': 0,
-    'min_child_samples': 20,
-    'is_unbalance': 'true'}
+lgb_params_textf ={'seed': 0,
+'objective': 'binary',
+'boosting_type': 'gbdt', 
+'verbose': -1,
+'feature_pre_filter': False,
+'lambda_l1': 0.0,
+'lambda_l2': 0.0,
+'num_leaves': 138,
+'feature_fraction': 0.584,
+'bagging_fraction': 0.6251271479798908,
+'bagging_freq': 4,
+'min_child_samples': 5,
+'num_iterations': 2500,
+'early_stopping_round': 100}
+
+lgb_params_emb = {'seed': 0,
+'objective': 'binary',
+'boosting_type': 'gbdt',
+'verbose': -1,
+'feature_pre_filter': False,
+'lambda_l1': 5.568197407372788e-07,
+'lambda_l2': 1.6466930512259972,
+'num_leaves': 16,
+'feature_fraction': 0.4,
+'bagging_fraction': 0.8154457427319182,
+'bagging_freq': 5,
+'min_child_samples': 20,
+'num_iterations': 2500,
+'early_stopping_round': 100}
+
+lgb_params_comb = {'seed': 0,
+'objective': 'binary',
+'boosting_type': 'gbdt',
+'verbose': -1,
+'feature_pre_filter': False,
+'lambda_l1': 0.0007484380397337787,
+'lambda_l2': 0.03604705491688939,
+'num_leaves': 10,
+'feature_fraction': 0.7,
+'bagging_fraction': 0.9663525526827651,
+'bagging_freq': 6,
+'min_child_samples': 20,
+'num_iterations': 2500,
+'early_stopping_round': 100}
 
 
 def task2_lgb():

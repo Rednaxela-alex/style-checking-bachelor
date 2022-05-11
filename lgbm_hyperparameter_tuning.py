@@ -17,12 +17,12 @@ def tune_lgbm(x_train, y_train, x_test, y_test, save_as):
     opt_params = {
         "seed": 0,
         "objective": "binary",
-        "boosting_type": "dart",
+        "boosting_type": "gbdt",
         "verbose": -1
     }
 
     optuna_model = lgb_optuna.train(opt_params, train_ds, valid_sets=val_ds, feval=lgbm_macro_f1,
-                                    num_boost_round=2500)
+                                    num_boost_round=2500, early_stopping_rounds=100, verbose_eval=-1)
 
     # Save results
     with open('./optuna/' + save_as, 'wb') as handle:
@@ -56,11 +56,11 @@ def opt_task2():
 
 
 def opt_task3():
-    x_train_emb, y_train, x_val_emb, y_val = task3_load_cases(feature="emb", shuffle=True)
-    tune_lgbm(x_train_emb, y_train, x_val_emb, y_val, save_as="opt_lgbm_t3_emb.pickle")
-
     x_train_textf, y_train, x_val_textf, y_val = task3_load_cases(feature="textf", shuffle=True)
     tune_lgbm(x_train_textf, y_train, x_val_textf, y_val, save_as="opt_lgbm_t3_textf.pickle")
+
+    x_train_emb, y_train, x_val_emb, y_val = task3_load_cases(feature="emb", shuffle=True)
+    tune_lgbm(x_train_emb, y_train, x_val_emb, y_val, save_as="opt_lgbm_t3_emb.pickle")
 
     x_train_comb = np.append(x_train_textf, x_train_emb, axis=1)
     x_val_comb = np.append(x_val_textf, x_val_emb, axis=1)
@@ -68,6 +68,6 @@ def opt_task3():
 
 
 if __name__ == '__main__':
-    opt_task1()
-    opt_task2()
+    #opt_task1()
+    #opt_task2()
     opt_task3()

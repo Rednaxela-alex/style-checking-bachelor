@@ -9,7 +9,10 @@ import torch
 
 from generate_embeddings import generate_embeddings
 from generate_text_features import generate_features
-from utilities import load_documents, my_task1_parchange_predictions_textf, my_task2_binary_predictions, my_task2_final_authorship_predictions, my_task3_parchange_final_predictions
+from utilities import load_documents
+from utilities_task1 import my_task1_parchange_predictions_textf 
+from utilities_task2 import my_task2_binary_predictions, my_task2_final_authorship_predictions
+from utilities_task3 import my_task3_parchange_final_predictions
 
 
 TASK1_MODEL = os.path.join(sys.path[0], "saved_models/task1_lgbm_69.pickle")

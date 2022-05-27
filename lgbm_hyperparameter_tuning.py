@@ -22,7 +22,7 @@ def tune_lgbm(x_train, y_train, x_test, y_test, save_as):
     }
 
     optuna_model = lgb_optuna.train(opt_params, train_ds, valid_sets=val_ds, feval=lgbm_macro_f1,
-                                    num_boost_round=2500, early_stopping_rounds=100, verbose_eval=-1)
+                                    num_boost_round=2500)
 
     # Save results
     with open('./optuna/' + save_as, 'wb') as handle:

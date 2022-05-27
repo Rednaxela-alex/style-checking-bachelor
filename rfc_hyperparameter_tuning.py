@@ -10,7 +10,7 @@ from utilities_task1 import task1_load_cases_comparing_each_paragraph, task1_loa
 from utilities_task3 import task3_load_cases
 
 
-n_estimators = [2000,5000,1500] # number of trees in the random forest
+n_estimators = [100,200,400,600,800,1000] # number of trees in the random forest
 max_depth = [int(x) for x in np.linspace(10, 120, num = 12)] # maximum number of levels allowed in each decision tree
 min_samples_split = [2, 6, 10] # minimum sample number to split a node
 min_samples_leaf = [1, 3, 4] # minimum sample number that can be stored in a leaf node
@@ -30,7 +30,7 @@ random_grid = {'n_estimators': n_estimators,
 rf = RandomForestClassifier()
 
 def random_search_CV(X,y,X_val, y_val, folds, save_as):
-    rfc_random = RandomizedSearchCV(estimator=rf, param_distributions=random_grid, n_iter=50, cv=folds,verbose=2, random_state=42, n_jobs=-1)
+    rfc_random = RandomizedSearchCV(estimator=rf, param_distributions=random_grid, n_iter=250, cv=folds,verbose=2, random_state=42, n_jobs=-1)
     rfc_random.fit(X,y)
     preds = rfc_random.predict(X_val)
     f1 = f1_score(y_val, preds, average='macro')
@@ -46,15 +46,15 @@ def random_search_CV(X,y,X_val, y_val, folds, save_as):
 def task1_rfc_tuning():
     x_train_emb, y_train, _, _ = task1_load_cases_comparing_each_paragraph(feature="emb", shuffle=True)
     _, _, x_val_emb, y_val = task1_load_cases(feature="emb", shuffle=True)
-    random_search_CV(x_train_emb, y_train,x_val_emb,y_val, 3, save_as="task1_rfc_best_param_textf")
+    random_search_CV(x_train_emb, y_train,x_val_emb,y_val, 5, save_as="task1_rfc_best_param_emb")
 
     x_train_textf, _, _, _ = task1_load_cases_comparing_each_paragraph(feature="textf", shuffle=True)
     _, _, x_val_textf, _ = task1_load_cases(feature="textf", shuffle=True)
-    random_search_CV(x_train_textf, y_train,x_val_textf,y_val, 3, save_as="task1_rfc_best_param_emb")
+    random_search_CV(x_train_textf, y_train,x_val_textf,y_val, 5, save_as="task1_rfc_best_param_textf")
 
     x_train_comb = np.append(x_train_textf, x_train_emb, axis=1)
     x_val_comb = np.append(x_val_textf, x_val_emb, axis=1)
-    random_search_CV(x_train_comb, y_train,x_val_comb, y_val, 3, save_as="task1_rfc_best_param_comb")
+    random_search_CV(x_train_comb, y_train,x_val_comb, y_val, 5, save_as="task1_rfc_best_param_comb")
 
 def task2_rfc_tuning():
     X_train_textf, y_train, X_val_textf,y_val = task2_load_cases(feature="textf", shuffle=True)
@@ -63,9 +63,9 @@ def task2_rfc_tuning():
     X_train_combi = np.append(X_train_textf, X_train_emb, axis=1)
     X_val_combi = np.append(X_val_textf, X_val_emb, axis=1)
     
-    random_search_CV(X_train_textf, y_train,X_val_textf, y_val, 3,"task2_rfc_best_param_textf.json")
-    random_search_CV(X_train_emb, y_train,X_val_emb, y_val, 3,"task2_rfc_best_param_emb.json")
-    random_search_CV(X_train_combi, y_train,X_val_combi, y_val, 3,"task2_rfc_best_param_comb.json")
+    random_search_CV(X_train_textf, y_train,X_val_textf, y_val, 5,"task2_rfc_best_param_textf.json")
+    random_search_CV(X_train_emb, y_train,X_val_emb, y_val, 5,"task2_rfc_best_param_emb.json")
+    random_search_CV(X_train_combi, y_train,X_val_combi, y_val, 5,"task2_rfc_best_param_comb.json")
 
 def task3_rfc_tuning():
     X_train_textf, y_train, X_val_textf,y_val = task3_load_cases(feature="textf", shuffle=True)
@@ -74,9 +74,9 @@ def task3_rfc_tuning():
     X_train_combi = np.append(X_train_textf, X_train_emb, axis=1)
     X_val_combi = np.append(X_val_textf, X_val_emb, axis=1)
     
-    random_search_CV(X_train_textf, y_train,X_val_textf, y_val, 3,"task3_rfc_best_param_textf.json")
-    random_search_CV(X_train_emb, y_train,X_val_emb, y_val, 3,"task3_rfc_best_param_emb.json")
-    random_search_CV(X_train_combi, y_train,X_val_combi, y_val, 3,"task3_rfc_best_param_comb.json")
+    random_search_CV(X_train_textf, y_train,X_val_textf, y_val, 5,"task3_rfc_best_param_textf.json")
+    random_search_CV(X_train_emb, y_train,X_val_emb, y_val, 5,"task3_rfc_best_param_emb.json")
+    random_search_CV(X_train_combi, y_train,X_val_combi, y_val, 5,"task3_rfc_best_param_comb.json")
 
 def main():
     task1_rfc_tuning()

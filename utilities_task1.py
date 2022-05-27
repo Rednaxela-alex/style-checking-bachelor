@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import pickle
 import pandas as pd
@@ -14,8 +15,7 @@ PAR_TEXTF_VAL_FOR_TASK1 = './features/dataset1/par_textf_val.pickle'
 
 
 def task1_load_cases(feature, shuffle=False, seed=0):
-    """Utility function for loading binary cases for task 2.
-    Specify 'emb' or 'textf' feature set."""
+
 
     if feature == "emb":
         path_train = PAR_EMB_TRAIN_FOR_TASK1
@@ -27,16 +27,23 @@ def task1_load_cases(feature, shuffle=False, seed=0):
         organize_cases = _organize_parchange_textf  # function
     else:
         raise ValueError
+    
+    if (not (os.path.exists(path_train) and os.path.exists(path_val))):
+        raise OSError
 
     # Loading training cases
-    features = pickle.load(open(path_train, "rb"))
-    _, _, _, labels_change, _ = load_labels('train_dataset1')
-    
+    file = open(path_train, "rb")
+    features = pickle.load(file)
+    file.close()
 
+    _, _, _, labels_change, _ = load_labels('train_dataset1')
     x_train, y_train = organize_cases(features, labels_change)
 
     # Loading validation cases
-    features = pickle.load(open(path_val, "rb"))
+    file = open(path_val, "rb")
+    features = pickle.load(file)
+    file.close()
+
     _, _, _, labels_change, _ = load_labels('val_dataset1')
     x_val, y_val = organize_cases(features, labels_change)
 
@@ -59,14 +66,21 @@ def task1_load_cases_comparing_each_paragraph(feature, shuffle=False, seed=0):
     else:
         raise ValueError
 
+    if (not (os.path.exists(path_train) and os.path.exists(path_val))):
+        raise OSError
+
     # Loading training cases
-    features = pickle.load(open(path_train, "rb"))
+    file = open(path_train, "rb")
+    features = pickle.load(file)
+    file.close()
     ids, _, _, _, labels_para_auth = load_labels('train_dataset1')
     
     x_train, y_train = organize_cases(features, labels_para_auth)
 
     # Loading validation cases
-    features = pickle.load(open(path_val, "rb"))
+    file = open(path_val, "rb")
+    features = pickle.load(file)
+    file.close()
     
     ids, _, _, _, labels_para_auth = load_labels('val_dataset1')
     x_val, y_val = organize_cases(features, labels_para_auth)
@@ -78,9 +92,9 @@ def task1_load_cases_comparing_each_paragraph(feature, shuffle=False, seed=0):
         x_val, y_val = sklearn.utils.shuffle(x_val, y_val, random_state=seed)
     return x_train, y_train, x_val, y_val
 
-def my_task1_parchange_predictions_emb(task1_model, par_textf, par_emb, lgb=False):
+def my_task1_parchange_predictions_emb(task1_model, par_textf, par_emb,stacking=False, lgb=False):
+    assert not stacking
     final_preds = []
-
     n_docs = len(par_emb)
     for doc_idx in range(n_docs):
         n_par = len(par_emb[doc_idx])
@@ -108,7 +122,8 @@ def my_task1_parchange_predictions_emb(task1_model, par_textf, par_emb, lgb=Fals
         final_preds.append(doc_pred)
     return final_preds
 
-def my_task1_parchange_predictions_textf(task1_model,  par_textf, par_emb, lgb=False):
+def my_task1_parchange_predictions_textf(task1_model,  par_textf, par_emb,stacking=False, lgb=False):
+    assert not stacking
     final_preds = []
     n_docs = len(par_textf)
     for doc_idx in range(n_docs):
@@ -138,7 +153,7 @@ def my_task1_parchange_predictions_textf(task1_model,  par_textf, par_emb, lgb=F
     return final_preds
 
 def my_task1_parchange_predictions_comb(task1_model, par_textf, par_emb, stacking=False, lgb=False):
-    assert lgb and stacking #both cant be true
+    assert not (lgb and stacking) #both cant be true
 
     final_preds = []
 

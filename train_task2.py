@@ -13,12 +13,20 @@ import pickle
 from stacking_ensemble import LightGBMWrapper, SklearnWrapper, StackingEnsemble
 from sklearn.linear_model import LogisticRegression
 
-rf_params_textf = {}
+rf_params_textf = {"n_estimators": 400, 
+"min_samples_split": 2, 
+"min_samples_leaf": 1, 
+"max_depth": 40}
 
-rf_params_emb = {}
+rf_params_emb = {"n_estimators": 400, 
+"min_samples_split": 2, 
+"min_samples_leaf": 1, 
+"max_depth": 40}
 
-rf_params_comb = {}
-
+rf_params_comb = {"n_estimators": 400, 
+"min_samples_split": 2, 
+"min_samples_leaf": 1, 
+"max_depth": 40}
 
 lgb_params_textf ={'seed': 0,
 'objective': 'binary',
@@ -32,8 +40,7 @@ lgb_params_textf ={'seed': 0,
 'bagging_fraction': 0.6251271479798908,
 'bagging_freq': 4,
 'min_child_samples': 5,
-'num_iterations': 2500,
-'early_stopping_round': 100}
+'num_iterations': 2500}
 
 lgb_params_emb = {'seed': 0,
 'objective': 'binary',
@@ -47,8 +54,7 @@ lgb_params_emb = {'seed': 0,
 'bagging_fraction': 0.8154457427319182,
 'bagging_freq': 5,
 'min_child_samples': 20,
-'num_iterations': 2500,
-'early_stopping_round': 100}
+'num_iterations': 2500}
 
 lgb_params_comb = {'seed': 0,
 'objective': 'binary',
@@ -62,20 +68,15 @@ lgb_params_comb = {'seed': 0,
 'bagging_fraction': 0.9663525526827651,
 'bagging_freq': 6,
 'min_child_samples': 20,
-'num_iterations': 2500,
-'early_stopping_round': 100}
+'num_iterations': 2500}
 
 
 def task2_lgbm(feature):
-    x_val_textf = None
-    x_val_emb = None
     if(feature == "textf"):
-        x_train, y_train, x_val_textf, y_val = task2_load_cases(feature="textf", shuffle=False)
-        x_val = x_val_textf
+        x_train, y_train, x_val, y_val = task2_load_cases(feature="textf", shuffle=False)
         lgb_params = lgb_params_textf
     elif(feature == "emb"):
-        x_train, y_train, x_val_emb, y_val = task2_load_cases(feature="emb", shuffle=False)
-        x_val = x_val_emb
+        x_train, y_train, x_val, y_val = task2_load_cases(feature="emb", shuffle=False)
         lgb_params = lgb_params_emb
     else:
         x_train_textf, y_train, x_val_textf, y_val = task2_load_cases(feature="textf", shuffle=False)
@@ -90,7 +91,7 @@ def task2_lgbm(feature):
 
     #training
     model = lgb.train(lgb_params, train_ds, valid_sets=[train_ds, val_ds], feval=lgbm_macro_f1,
-                     num_boost_round=10000, early_stopping_rounds=250)
+                     num_boost_round=10000)
    
 
     #predicting on validationset
@@ -107,7 +108,7 @@ def task2_lgbm(feature):
         os.makedirs('./saved_models/task2')
 
     #saving the model
-    with open(f'./saved_models/task2/task2_lgbm_'+ feature +'{round(f1 * 100)}.pickle', 'wb') as handle:
+    with open(f'./saved_models/task2/task2_lgbm_{feature}_{round(f1 * 100)}.pickle', 'wb') as handle:
         pickle.dump(model, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 
@@ -126,7 +127,7 @@ def task2_rf(feature):
         rf_params = rf_params_comb
 
     model = RandomForestClassifier()
-    model.set_params(rf_params)
+    model.set_params(**rf_params)
     
 
     model.fit(x_train, y_train)
@@ -145,7 +146,7 @@ def task2_rf(feature):
         os.makedirs('./saved_models/task2')
 
     #save the model
-    with open(f'./saved_models/task2/task2_rf_'+ feature +'_{round(f1 * 100)}.pickle', 'wb') as handle:
+    with open(f'./saved_models/task2/task2_rf_{feature}_{round(f1 * 100)}.pickle', 'wb') as handle:
         pickle.dump(model, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 def task2_stacking_sklearn(feature):
@@ -166,10 +167,10 @@ def task2_stacking_sklearn(feature):
         rf_params = rf_params_comb
     
     lgbClassifier = LGBMClassifier()
-    lgbClassifier.set_params(lgb_params)
+    lgbClassifier.set_params(**lgb_params)
 
     rfClassifier = RandomForestClassifier()
-    rfClassifier.set_params(rf_params)
+    rfClassifier.set_params(**rf_params)
     
     
     estimators = [
@@ -194,7 +195,7 @@ def task2_stacking_sklearn(feature):
         os.makedirs('./saved_models/task2')
 
     #save the model
-    with open(f'./saved_models/task2/task2_sklearn_'+ feature +'_{round(f1 * 100)}.pickle', 'wb') as handle:
+    with open(f'./saved_models/task2/task2_sklearn_{feature}_{round(f1 * 100)}.pickle', 'wb') as handle:
         pickle.dump(model, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 def task2_stacking():
@@ -233,9 +234,9 @@ def task2_stacking():
         pickle.dump(ensemble, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 def main():
-    task2_lgbm("textf")
-    task2_lgbm("emb")
-    task2_lgbm("comb")
+    #task2_lgbm("textf")
+    #task2_lgbm("emb")
+    #task2_lgbm("comb")
     task2_rf("textf")
     task2_rf("emb")
     task2_rf("comb")

@@ -2,6 +2,7 @@ import numpy as np
 import pickle
 import pandas as pd
 import sklearn
+import os
 from utilities import _organize_parchange_embeddings, _organize_parchange_textf, load_labels
 
 PAR_EMB_TRAIN_FOR_TASK3 = './features/dataset3/par_emb_train.pickle'
@@ -24,15 +25,24 @@ def task3_load_cases(feature, shuffle=False, seed=0):
     else:
         raise ValueError
 
+    if (not (os.path.exists(path_train) and os.path.exists(path_val))):
+        raise OSError
+
     # Loading training cases
-    features = pickle.load(open(path_train, "rb"))
+
+
+    file = open(path_train, "rb")
+    features = pickle.load(file)
+    file.close()
     _, _, _, labels_change, _ = load_labels('train_dataset3')
     
 
     x_train, y_train = organize_cases(features, labels_change)
 
     # Loading validation cases
-    features = pickle.load(open(path_val, "rb"))
+    file = open(path_val, "rb")
+    features = pickle.load(file)
+    file.close()
     _, _, _, labels_change, _ = load_labels('val_dataset3')
     x_val, y_val = organize_cases(features, labels_change)
 
@@ -45,6 +55,7 @@ def task3_load_cases(feature, shuffle=False, seed=0):
 
 
 def my_task3_parchange_predictions_comb(task3_model, par_emb, par_textf,stacking=False,lgb=False):
+    assert not (stacking and lgb)
     final_preds = []
 
     n_docs = len(par_emb)
@@ -53,7 +64,7 @@ def my_task3_parchange_predictions_comb(task3_model, par_emb, par_textf,stacking
 
         comb = []
         par_emb_flat, par_textf_flat = [], []
-        for i in range(n_par):
+        for i in range(n_par-1):
             idx1 = i        # Index of current paragraph
             idx2 = i + 1    # Index of following paragraph
 
@@ -65,18 +76,19 @@ def my_task3_parchange_predictions_comb(task3_model, par_emb, par_textf,stacking
             comb.append(combined_feature)
         par_emb_flat, par_textf_flat = np.array(par_emb_flat), np.array(par_textf_flat)
         if stacking:
-            probabilities = task3_model.predict_proba([par_emb_flat, par_textf_flat])
+            paragraph_preds_proba = np.array(task3_model.predict_proba([par_emb_flat, par_textf_flat]))
         else:
             if lgb:
-                paragraph_preds_proba = task3_model.predict(comb)
+                paragraph_preds_proba =np.array(task3_model.predict(comb))
             else:
                 probabilities = task3_model.predict_proba(comb)
-                paragraph_preds_proba = [i[1] for i in probabilities]
+                paragraph_preds_proba = np.array([i[1] for i in probabilities])
         paragraph_preds = np.around(paragraph_preds_proba.astype(np.double))
         final_preds.append(paragraph_preds)
     return final_preds
 
-def my_task3_parchange_predictions_emb(task3_model, par_emb, lgb=False):
+def my_task3_parchange_predictions_emb(task3_model, par_emb, par_textf,stacking=False,lgb=False):
+    assert not stacking
     final_preds = []
     
     n_docs = len(par_emb)
@@ -94,15 +106,16 @@ def my_task3_parchange_predictions_emb(task3_model, par_emb, lgb=False):
             
 
         if lgb:
-            paragraph_preds_proba = task3_model.predict(emb)
+            paragraph_preds_proba =np.array(task3_model.predict(emb))     
         else:
             probabilities = task3_model.predict_proba(emb)
-            paragraph_preds_proba = [i[1] for i in probabilities]
+            paragraph_preds_proba = np.array([i[1] for i in probabilities])
         paragraph_preds = np.around(paragraph_preds_proba.astype(np.double))
         final_preds.append(paragraph_preds)
     return final_preds
 
-def my_task3_parchange_predictions_textf(task3_model, par_textf, lgb=False):
+def my_task3_parchange_predictions_textf(task3_model,par_emb, par_textf,stacking=False,lgb=False):
+    assert not stacking
     final_preds = []
     
     n_docs = len(par_textf)
@@ -120,10 +133,11 @@ def my_task3_parchange_predictions_textf(task3_model, par_textf, lgb=False):
             
 
         if lgb:
-            paragraph_preds_proba = task3_model.predict(textf)
+            paragraph_preds_proba =np.array(task3_model.predict(textf))
         else:
             probabilities = task3_model.predict_proba(textf)
-            paragraph_preds_proba = [i[1] for i in probabilities]
+            paragraph_preds_proba = np.array([i[1] for i in probabilities])
+            
         paragraph_preds = np.around(paragraph_preds_proba.astype(np.double))
         final_preds.append(paragraph_preds)
     return final_preds

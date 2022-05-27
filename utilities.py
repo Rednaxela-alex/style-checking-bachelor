@@ -166,12 +166,6 @@ def _map_authorhip_to_paragraphs(labels_paragraph_author):
 
 
 def _organize_authorship_embeddings(paragraph_embeddings, labels_paragraph_author):
-    """Organize embeddings per document and authorship labels per document into a flat array
-    of binary cases. Used in task 3.
-
-    We find that not averaging the combined embeddings improve score, thus we do not average over sentence count.
-    """
-
     assert len(paragraph_embeddings) == len(labels_paragraph_author)
     labels, paragraph_pairs = _map_authorhip_to_paragraphs(labels_paragraph_author)
     n = len(paragraph_embeddings)

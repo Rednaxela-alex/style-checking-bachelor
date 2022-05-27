@@ -14,11 +14,20 @@ from stacking_ensemble import LightGBMWrapper, SklearnWrapper, StackingEnsemble
 from sklearn.linear_model import LogisticRegression
 
 
-rf_params_textf = {}
+rf_params_textf = {"n_estimators": 5000, 
+"min_samples_split": 2, 
+"min_samples_leaf": 1, 
+"max_depth": 40}
 
-rf_params_emb = {}
+rf_params_emb = {"n_estimators": 5000, 
+"min_samples_split": 2, 
+"min_samples_leaf": 1, 
+"max_depth": 40}
 
-rf_params_comb = {}
+rf_params_comb = {"n_estimators": 5000, 
+"min_samples_split": 2, 
+"min_samples_leaf": 1, 
+"max_depth": 40}
 
 lgb_params_textf ={'seed': 0,
 'objective': 'binary',
@@ -33,22 +42,21 @@ lgb_params_textf ={'seed': 0,
 'bagging_freq': 1,
 'min_child_samples': 20,
 'num_iterations': 2500,
-'early_stopping_round': 100}
+}
 
-lgb_params_emb = {'seed': 0,
+lgb_params_emb ={'seed': 0,
 'objective': 'binary',
 'boosting_type': 'gbdt',
 'verbose': -1,
 'feature_pre_filter': False,
-'lambda_l1': 0.0,
-'lambda_l2': 0.0,
-'num_leaves': 9, 
-'feature_fraction': 0.8999999999999999,
-'bagging_fraction': 1.0,
-'bagging_freq': 0,
+'lambda_l1': 1.4206133874048629e-07,
+'lambda_l2': 2.396038769472299e-07,
+'num_leaves': 248,
+'feature_fraction': 1.0,
+'bagging_fraction': 0.9155944058181463,
+'bagging_freq': 1,
 'min_child_samples': 20,
-'num_iterations': 2500,
-'early_stopping_round': 100}
+'num_iterations': 2500}
 
 lgb_params_comb = {'seed': 0,
 'objective': 'binary',
@@ -62,24 +70,17 @@ lgb_params_comb = {'seed': 0,
 'bagging_fraction': 1.0,
 'bagging_freq': 0,
 'min_child_samples': 20,
-'num_iterations': 2500,
-'early_stopping_round': 100}
+'num_iterations': 2500}
 
 
 def task1_lgbm(feature):
-    x_val_textf = None
-    x_val_emb = None
     if(feature == "textf"):
         x_train, y_train, _, _ = task1_load_cases_comparing_each_paragraph(feature="textf", shuffle=True)
-        _, _, x_val_textf, y_val = task1_load_cases(feature="textf", shuffle=False)
-        x_val = x_val_textf
-        predictor = my_task1_parchange_predictions_textf
+        _, _, x_val, y_val = task1_load_cases(feature="textf", shuffle=False)
         lgb_params = lgb_params_textf
     elif(feature == "emb"):
         x_train, y_train, _, _ = task1_load_cases_comparing_each_paragraph(feature="emb", shuffle=True)
-        _, _, x_val_emb, y_val = task1_load_cases(feature="emb", shuffle=False)
-        x_val = x_val_emb
-        predictor = my_task1_parchange_predictions_emb
+        _, _, x_val, y_val = task1_load_cases(feature="emb", shuffle=False)
         lgb_params = lgb_params_emb
     else:
         x_train_textf, y_train, _, _ = task1_load_cases_comparing_each_paragraph(feature="textf", shuffle=True)
@@ -88,7 +89,6 @@ def task1_lgbm(feature):
         _, _, x_val_emb, _ = task1_load_cases(feature="emb", shuffle=False)
         x_val = np.append(x_val_textf, x_val_emb, axis=1)
         x_train = np.append(x_train_textf, x_train_emb, axis=1)
-        predictor = my_task1_parchange_predictions_comb
         lgb_params = lgb_params_comb
 
     train_ds = lgb.Dataset(x_train,label=y_train)
@@ -96,13 +96,12 @@ def task1_lgbm(feature):
 
     #training
     model = lgb.train(lgb_params, train_ds, valid_sets=[train_ds, val_ds], feval=lgbm_macro_f1,
-                     num_boost_round=10000, early_stopping_rounds=250)
+                     num_boost_round=1000)
 
 
     #make the prediction on validationset
-    y_predict =  predictor(model, par_textf=x_val_textf, par_emb=x_val_emb, lgb=True)
-    #flatten the result
-    preds = [item for sublist in y_predict for item in sublist]
+    paragraph_preds_proba = model.predict(x_val)
+    preds = np.around(paragraph_preds_proba.astype(np.double))
 
     #metrics
     ac = accuracy_score(y_val, preds)
@@ -115,39 +114,35 @@ def task1_lgbm(feature):
         os.makedirs('./saved_models/task1')
 
     #save the model
-    with open(f'./saved_models/task1/task1_lgbm_'+ feature +'_{round(f1 * 100)}.pickle', 'wb') as handle:
+    with open(f'./saved_models/task1/task1_lgbm_{feature}_{round(f1 * 100)}.pickle', 'wb') as handle:
         pickle.dump(model, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 def task1_rf(feature):
     if(feature == "textf"):
         x_train, y_train, _, _ = task1_load_cases_comparing_each_paragraph(feature="textf", shuffle=True)
-        _, _, x_val_textf, y_val = task1_load_cases(feature="textf", shuffle=False)
+        _, _, x_val, y_val = task1_load_cases(feature="textf", shuffle=False)
         rf_params = rf_params_textf
-        predictor = my_task1_parchange_predictions_textf
     elif(feature == "emb"):
         x_train, y_train, _, _ = task1_load_cases_comparing_each_paragraph(feature="emb", shuffle=True)
-        _, _, x_val_emb, y_val = task1_load_cases(feature="emb", shuffle=False)
+        _, _, x_val, y_val = task1_load_cases(feature="emb", shuffle=False)
         rf_params = rf_params_emb
-        predictor = my_task1_parchange_predictions_emb
     else:
         x_train_textf, y_train, _, _ = task1_load_cases_comparing_each_paragraph(feature="textf", shuffle=True)
         x_train_emb, _, _, _ = task1_load_cases_comparing_each_paragraph(feature="emb", shuffle=True)
         _, _, x_val_textf, y_val = task1_load_cases(feature="textf", shuffle=False)
         _, _, x_val_emb, _ = task1_load_cases(feature="emb", shuffle=False)
+        x_val = np.append(x_val_textf, x_val_emb, axis=1)
         x_train = np.append(x_train_textf, x_train_emb, axis=1)
         rf_params = rf_params_comb
-        predictor = my_task1_parchange_predictions_comb
 
     model = RandomForestClassifier()
-    model.set_params(rf_params)
+    model.set_params(**rf_params)
     
 
     model.fit(x_train, y_train)
 
 
-    y_predict =  predictor(model, par_textf=x_val_textf, par_emb=x_val_emb)
-    #flatten the result
-    preds = [item for sublist in y_predict for item in sublist]
+    preds =  model.predict(x_val)
 
     #metrics
     ac = accuracy_score(y_val, preds)
@@ -160,37 +155,36 @@ def task1_rf(feature):
         os.makedirs('./saved_models/task1')
 
     #save the model
-    with open(f'./saved_models/task1/task1_rf_'+ feature +'_{round(f1 * 100)}.pickle', 'wb') as handle:
+    with open(f'./saved_models/task1/task1_rf_{feature}_{round(f1 * 100)}.pickle', 'wb') as handle:
         pickle.dump(model, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 def task1_stacking_sklearn(feature):
     if(feature == "textf"):
         x_train, y_train, _, _ = task1_load_cases_comparing_each_paragraph(feature="textf", shuffle=True)
-        _, _, x_val_textf, y_val = task1_load_cases(feature="textf", shuffle=False)
+        _, _, x_val, y_val = task1_load_cases(feature="textf", shuffle=False)
         lgb_params = lgb_params_textf
         rf_params = rf_params_textf
-        predictor = my_task1_parchange_predictions_textf
     elif(feature == "emb"):
         x_train, y_train, _, _ = task1_load_cases_comparing_each_paragraph(feature="emb", shuffle=True)
-        _, _, x_val_emb, y_val = task1_load_cases(feature="emb", shuffle=False)
+        _, _, x_val, y_val = task1_load_cases(feature="emb", shuffle=False)
         lgb_params = lgb_params_emb
         rf_params = rf_params_emb
-        predictor = my_task1_parchange_predictions_emb
     else:
         x_train_textf, y_train, _, _ = task1_load_cases_comparing_each_paragraph(feature="textf", shuffle=True)
         x_train_emb, _, _, _ = task1_load_cases_comparing_each_paragraph(feature="emb", shuffle=True)
         _, _, x_val_textf, y_val = task1_load_cases(feature="textf", shuffle=False)
         _, _, x_val_emb, _ = task1_load_cases(feature="emb", shuffle=False)
+        x_val = np.append(x_val_textf, x_val_emb, axis=1)
         x_train = np.append(x_train_textf, x_train_emb, axis=1)
         lgb_params = lgb_params_comb
         rf_params = rf_params_comb
-        predictor = my_task1_parchange_predictions_comb
     
+
     lgbClassifier = LGBMClassifier()
-    lgbClassifier.set_params(lgb_params)
+    lgbClassifier.set_params(**lgb_params)
 
     rfClassifier = RandomForestClassifier()
-    rfClassifier.set_params(rf_params)
+    rfClassifier.set_params(**rf_params)
     
     
     estimators = [
@@ -201,10 +195,7 @@ def task1_stacking_sklearn(feature):
 
     model.fit(x_train, y_train)
 
-
-    y_predict =  predictor(model, par_textf=x_val_textf, par_emb=x_val_emb)
-    #flatten the result
-    preds = [item for sublist in y_predict for item in sublist]
+    preds = model.predict(x_val)
 
     #metrics
     ac = accuracy_score(y_val, preds)
@@ -217,7 +208,7 @@ def task1_stacking_sklearn(feature):
         os.makedirs('./saved_models/task1')
 
     #save the model
-    with open(f'./saved_models/task1/task1_sklearn_'+ feature +'_{round(f1 * 100)}.pickle', 'wb') as handle:
+    with open(f'./saved_models/task1/task1_sklearn_{feature}_{round(f1 * 100)}.pickle', 'wb') as handle:
         pickle.dump(model, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
     
@@ -229,13 +220,18 @@ def task1_stacking():
     _, _, x_val_textf, y_val = task1_load_cases(feature="textf", shuffle=False)
     _, _, x_val_emb, _ = task1_load_cases(feature="emb", shuffle=False)
 
+    rf_emb=RandomForestClassifier()
+    rf_emb.set_params(**rf_params_comb)
+    
     classifiers_emb = [
         LightGBMWrapper(clf=LGBMClassifier, params=lgb_params_emb),
-        SklearnWrapper(clf=RandomForestClassifier())]
+        SklearnWrapper(clf=rf_emb)]
 
+    rf_textf=RandomForestClassifier()
+    rf_textf.set_params(**rf_params_comb)
     classifiers_textf = [
         LightGBMWrapper(clf=LGBMClassifier, params=lgb_params_textf),
-        SklearnWrapper(clf=RandomForestClassifier())]
+        SklearnWrapper(clf=rf_textf)]
 
     ensemble = StackingEnsemble()
 
@@ -247,9 +243,7 @@ def task1_stacking():
 
     ensemble.train_meta_learner()
 
-    y_predict = my_task1_parchange_predictions_comb(ensemble,x_val_textf, x_val_emb, stacking=True)
-    #flatten the result
-    preds = [item for sublist in y_predict for item in sublist]
+    preds = ensemble.predict([x_val_textf, x_val_emb])
 
     ac = accuracy_score(y_val, preds)
     f1 = f1_score(y_val, preds, average='macro')
@@ -263,15 +257,15 @@ def task1_stacking():
         pickle.dump(ensemble, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 def main():
-    task1_lgbm("textf")
-    task1_lgbm("emb")
-    task1_lgbm("comb")
-    task1_rf("textf")
-    task1_rf("emb")
-    task1_rf("comb")
-    task1_stacking_sklearn("textf")
-    task1_stacking_sklearn("emb")
-    task1_stacking_sklearn("comb")
+    #task1_lgbm("textf")
+    #task1_lgbm("emb")
+    #task1_lgbm("comb")
+    #task1_rf("textf")
+    #task1_rf("emb")
+    #task1_rf("comb")
+    #task1_stacking_sklearn("textf")
+    #task1_stacking_sklearn("emb")
+    #task1_stacking_sklearn("comb")
     task1_stacking()
 
 if __name__ == '__main__':

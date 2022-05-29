@@ -265,6 +265,10 @@ def main():
     task3_truth = read_ground_truth_files(os.path.join(args.truth, 'dataset3'))
     task3_f1 = compute_score_multiple_predictions(task3_truth, task3_solutions, 'changes', labels=[0, 1])
 
+
+    if not os.path.exists(args.output):
+        os.makedirs(args.output)
+
     for k, v in {
         "task1_f1_score": task1_f1,
         "task2_f1_score": task2_f1,

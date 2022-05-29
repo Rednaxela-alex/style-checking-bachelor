@@ -1,30 +1,32 @@
-from pyexpat import features
-
-from sqlalchemy import null
-from utilities import  lgbm_macro_f1
-from utilities_task1 import task1_load_cases, task1_load_cases_comparing_each_paragraph, my_task1_parchange_predictions_textf, my_task1_parchange_predictions_emb, my_task1_parchange_predictions_comb
 import lightgbm as lgb
 import numpy as np
-from sklearn.metrics import accuracy_score, f1_score
-from sklearn.ensemble import RandomForestClassifier, StackingClassifier
-from lightgbm import LGBMClassifier
 import os
 import pickle
 from stacking_ensemble import LightGBMWrapper, SklearnWrapper, StackingEnsemble
 from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, f1_score
+from sklearn.ensemble import RandomForestClassifier, StackingClassifier
+from lightgbm import LGBMClassifier
+from utilities import  lgbm_macro_f1
+from utilities_task1 import task1_load_cases, task1_load_cases_comparing_each_paragraph
 
 
-rf_params_textf = {"n_estimators": 5000, 
+
+"""
+hyperparameters for the random forest and LightGBM Classifier
+"""
+
+rf_params_textf = {"n_estimators": 1000, 
 "min_samples_split": 2, 
 "min_samples_leaf": 1, 
 "max_depth": 40}
 
-rf_params_emb = {"n_estimators": 5000, 
+rf_params_emb = {"n_estimators": 1000, 
 "min_samples_split": 2, 
 "min_samples_leaf": 1, 
 "max_depth": 40}
 
-rf_params_comb = {"n_estimators": 5000, 
+rf_params_comb = {"n_estimators": 1000, 
 "min_samples_split": 2, 
 "min_samples_leaf": 1, 
 "max_depth": 40}
@@ -72,6 +74,9 @@ lgb_params_comb = {'seed': 0,
 'min_child_samples': 20,
 'num_iterations': 2500}
 
+"""
+Methods for training for task 1 for the Sytle Change Detection Task at PAN 2022
+"""
 
 def task1_lgbm(feature):
     if(feature == "textf"):
@@ -211,9 +216,11 @@ def task1_stacking_sklearn(feature):
     with open(f'./saved_models/task1/task1_sklearn_{feature}_{round(f1 * 100)}.pickle', 'wb') as handle:
         pickle.dump(model, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
-    
-
-
+"""
+training method for the stacking ensemble from 
+Eivind Strom avaiable in:
+https://github.com/eivistr/pan21-style-change-detection-stacking-ensemble
+""" 
 def task1_stacking():
     x_train_textf, y_train, _, _ = task1_load_cases_comparing_each_paragraph(feature="textf", shuffle=True)
     x_train_emb, _, _, _ = task1_load_cases_comparing_each_paragraph(feature="emb", shuffle=True)
@@ -243,7 +250,7 @@ def task1_stacking():
 
     ensemble.train_meta_learner()
 
-    preds = ensemble.predict([x_val_textf, x_val_emb])
+    preds = ensemble.predict([x_val_emb,x_val_textf])
 
     ac = accuracy_score(y_val, preds)
     f1 = f1_score(y_val, preds, average='macro')

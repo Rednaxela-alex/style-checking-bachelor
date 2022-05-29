@@ -1,21 +1,26 @@
 from ensurepip import bootstrap
 from sklearn.ensemble import RandomForestClassifier
 import numpy as np
-from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import RandomizedSearchCV
 from sklearn.metrics import f1_score
 import json as js
+import os
 from utilities_task2 import task2_load_cases
 from utilities_task1 import task1_load_cases_comparing_each_paragraph, task1_load_cases
 from utilities_task3 import task3_load_cases
 
+"""
+Module to hypertune parameters for the random forest with random search cross validation
+"""
 
 n_estimators = [100,200,400,600,800,1000] # number of trees in the random forest
 max_depth = [int(x) for x in np.linspace(10, 120, num = 12)] # maximum number of levels allowed in each decision tree
 min_samples_split = [2, 6, 10] # minimum sample number to split a node
 min_samples_leaf = [1, 3, 4] # minimum sample number that can be stored in a leaf node
 
-
+"""
+grid for the cross validation
+"""
 
 random_grid = {'n_estimators': n_estimators,
 
@@ -79,6 +84,8 @@ def task3_rfc_tuning():
     random_search_CV(X_train_combi, y_train,X_val_combi, y_val, 5,"task3_rfc_best_param_comb.json")
 
 def main():
+    if not os.path.exists('./rfc_tuning'):
+        os.makedirs('./rfc_tuning')
     task1_rfc_tuning()
     task2_rfc_tuning()
     task2_rfc_tuning()

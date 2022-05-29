@@ -4,11 +4,24 @@ import sklearn
 import os
 from utilities import _organize_authorship_embeddings,_organize_authorship_textf, load_labels
 
+"""
+This code is adapted from the source code used in the paper
+'Multi-label Style Change Detection by Solving a Binary Classification Problem---Notebook for PAN at CLEF 2021'
+
+Title: Multi-label Style Change Detection by Solving a Binary Classification Problem---Notebook for PAN at CLEF 2021
+Authors: Eivind Strom
+Date: 2021
+Availability: https://github.com/eivistr/pan21-style-change-detection-stacking-ensemble
+"""
 
 PAR_EMB_TRAIN_FOR_TASK2 = './features/dataset2/par_emb_train.pickle'
 PAR_EMB_VAL_FOR_TASK2 = './features/dataset2/par_emb_val.pickle'
 PAR_TEXTF_TRAIN_FOR_TASK2 = './features/dataset2/par_textf_train.pickle'
 PAR_TEXTF_VAL_FOR_TASK2 = './features/dataset2/par_textf_val.pickle'
+
+"""
+loading samples by comparing each parapgraph to eachother and assigning labels to it
+"""
 
 def task2_load_cases(feature, shuffle=False, seed=0):
     if feature == "emb":
@@ -48,6 +61,10 @@ def task2_load_cases(feature, shuffle=False, seed=0):
         x_val, y_val = sklearn.utils.shuffle(x_val, y_val, random_state=seed)
     return x_train, y_train, x_val, y_val
 
+"""
+binary predection between paragraphs whether there is a style change or not
+"""
+
 def my_task2_binary_predictions_comb(task2_model, par_emb, par_textf, stacking=False, lgb=False):
     assert not (stacking and lgb)
     par_emb_flat, par_textf_flat = [], []
@@ -72,6 +89,10 @@ def my_task2_binary_predictions_comb(task2_model, par_emb, par_textf, stacking=F
             probabilities = task2_model.predict_proba(combined_features)
             binary_preds = [i[1] for i in probabilities]
     return binary_preds
+
+"""
+based on the binary prediction assigning author to each paragraph
+"""
 
 def my_task2_binary_predictions_emb(task2_model, par_emb,par_textf, stacking=False, lgb=False):
     assert not stacking

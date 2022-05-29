@@ -126,7 +126,7 @@ def get_chunk_count(problem_id, input_folder):
     :param problem_id: problem id for which paragraphs/sentences are counted
     :param input_folder: path to folder holding input files (input texts, .txt)
     """
-    with open(os.path.join(input_folder, f"problem-{problem_id}.txt")) as txt_file:
+    with open(os.path.join(input_folder, f"problem-{problem_id}.txt"),encoding="utf8") as txt_file:
         return txt_file.read().count("\n") + 1
 
 

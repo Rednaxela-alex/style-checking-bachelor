@@ -6,3 +6,6 @@ evaluation/
 __pycache__/
 features/
 saved_models/
+*_output_dir/
+rfc_tuning/
+optuna/

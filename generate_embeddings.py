@@ -1,15 +1,5 @@
 """
 This code is adapted from the source code used in the paper
-'Style Change Detection Using BERT (2020)'
-
-Title: Style-Change-Detection-Using-BERT
-Authors: Aarish Iyer and Soroush Vosoughi
-Date: Jul 18, 2020
-Availability: https://github.com/aarish407/Style-Change-Detection-Using-BERT
-"""
-
-"""
-This code is adapted from the source code used in the paper
 'Multi-label Style Change Detection by Solving a Binary Classification Problem---Notebook for PAN at CLEF 2021'
 
 Title: Multi-label Style Change Detection by Solving a Binary Classification Problem---Notebook for PAN at CLEF 2021
@@ -17,20 +7,15 @@ Authors: Eivind Strom
 Date: 2021
 Availability: https://github.com/eivistr/pan21-style-change-detection-stacking-ensemble
 """
-
-
-from utilities import load_documents
-from split_into_sentences import par_into_sentences
 import random
-import re
 import pickle
-import time
-from tqdm import tqdm
 import numpy as np
 import os
-
-from transformers import BertTokenizer, BertModel
 import torch
+from tqdm import tqdm
+from transformers import BertTokenizer, BertModel
+from utilities import load_documents
+from split_into_sentences import par_into_sentences
 
 torch.manual_seed(0)
 random.seed(0)
@@ -117,11 +102,7 @@ def main():
     val_dataset2_docs, val_dataset2_doc_ids = load_documents('val_dataset2')
     val_dataset3_docs, val_dataset3_doc_ids = load_documents('val_dataset3')
 
-    # NB! Generating embeddings takes a long time
-
     # Save results
-    
-
     if not os.path.exists('./features/dataset1'):
         os.makedirs('./features/dataset1')
     if not os.path.exists('./features/dataset2'):
@@ -174,18 +155,7 @@ def main():
 
     with open('./features/dataset3/' + 'par_emb_val.pickle', 'wb') as handle:
         pickle.dump(val_dataset3_par_emb, handle, protocol=pickle.HIGHEST_PROTOCOL)
-    
-    
-
-    
-   
-    
-
-
-    
-
-    
-
+     
     
 
 if __name__ == '__main__':

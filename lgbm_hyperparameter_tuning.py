@@ -1,12 +1,14 @@
-import time
+import os
 import pickle
 
 import lightgbm as lgb
-from matplotlib.pyplot import axis
 import optuna.integration.lightgbm as lgb_optuna
 import numpy as np
 
-from utilities import task1_load_cases, task1_load_cases_comparing_each_paragraph, task2_load_cases, task3_load_cases, lgbm_macro_f1
+from utilities_task1 import task1_load_cases, task1_load_cases_comparing_each_paragraph
+from utilities_task2 import task2_load_cases
+from utilities_task3 import task3_load_cases 
+from utilities import lgbm_macro_f1
 
 
 def tune_lgbm(x_train, y_train, x_test, y_test, save_as):
@@ -68,6 +70,8 @@ def opt_task3():
 
 
 if __name__ == '__main__':
-    #opt_task1()
-    #opt_task2()
+    if not os.path.exists('./optuna'):
+        os.makedirs('./optuna')
+    opt_task1()
+    opt_task2()
     opt_task3()

@@ -1,29 +1,32 @@
-from sklearn.ensemble import RandomForestClassifier
-from utilities import lgbm_macro_f1
-from utilities_task2 import task2_load_cases
+import os
+import pickle
 import lightgbm as lgb
 import numpy as np
-from sklearn.metrics import accuracy_score, f1_score
 import os
 import pickle
 from sklearn.ensemble import RandomForestClassifier, StackingClassifier
 from lightgbm import LGBMClassifier
-import os
-import pickle
 from stacking_ensemble import LightGBMWrapper, SklearnWrapper, StackingEnsemble
 from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, f1_score
+from sklearn.ensemble import RandomForestClassifier
+from utilities import lgbm_macro_f1
+from utilities_task2 import task2_load_cases
+"""
+hyperparameters for the random forest and LightGBM Classifier
+"""
 
-rf_params_textf = {"n_estimators": 400, 
+rf_params_textf = {"n_estimators": 1000, 
 "min_samples_split": 2, 
 "min_samples_leaf": 1, 
 "max_depth": 40}
 
-rf_params_emb = {"n_estimators": 400, 
+rf_params_emb = {"n_estimators": 1000, 
 "min_samples_split": 2, 
 "min_samples_leaf": 1, 
 "max_depth": 40}
 
-rf_params_comb = {"n_estimators": 400, 
+rf_params_comb = {"n_estimators": 1000, 
 "min_samples_split": 2, 
 "min_samples_leaf": 1, 
 "max_depth": 40}
@@ -70,6 +73,9 @@ lgb_params_comb = {'seed': 0,
 'min_child_samples': 20,
 'num_iterations': 2500}
 
+"""
+Methods for training for task 2 for the Sytle Change Detection Task at PAN 2022
+"""
 
 def task2_lgbm(feature):
     if(feature == "textf"):
@@ -198,6 +204,12 @@ def task2_stacking_sklearn(feature):
     with open(f'./saved_models/task2/task2_sklearn_{feature}_{round(f1 * 100)}.pickle', 'wb') as handle:
         pickle.dump(model, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
+"""
+training method for the stacking ensemble from 
+Eivind Strom avaiable in:
+https://github.com/eivistr/pan21-style-change-detection-stacking-ensemble
+"""
+
 def task2_stacking():
     x_train_textf, y_train, x_val_textf, y_val = task2_load_cases(feature="textf", shuffle=False)
     x_train_emb, _, x_val_emb, _ = task2_load_cases(feature="emb", shuffle=False)
@@ -234,9 +246,9 @@ def task2_stacking():
         pickle.dump(ensemble, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 def main():
-    #task2_lgbm("textf")
-    #task2_lgbm("emb")
-    #task2_lgbm("comb")
+    task2_lgbm("textf")
+    task2_lgbm("emb")
+    task2_lgbm("comb")
     task2_rf("textf")
     task2_rf("emb")
     task2_rf("comb")

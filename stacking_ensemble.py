@@ -10,6 +10,16 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 
+"""
+This code is adapted from the source code used in the paper
+'Multi-label Style Change Detection by Solving a Binary Classification Problem---Notebook for PAN at CLEF 2021'
+
+Title: Multi-label Style Change Detection by Solving a Binary Classification Problem---Notebook for PAN at CLEF 2021
+Authors: Eivind Strom
+Date: 2021
+Availability: https://github.com/eivistr/pan21-style-change-detection-stacking-ensemble
+"""
+
 SEED = 0
 NFOLDS = 4
 KFOLD = StratifiedKFold(n_splits=NFOLDS, shuffle=True, random_state=SEED)
@@ -169,7 +179,7 @@ class StackingEnsemble:
 
         print(f"\nTraining meta-learner on ensemble of {self.clf_count} classifiers:")
         self.metalearner = LogisticRegression()
-        self.metalearner.fit(self.oof_train, self.y_train)
+        self.metalearner.fit(self.oof_train.values, self.y_train)
 
         preds = self.metalearner.predict(self.oof_train)
         ac = accuracy_score(self.y_train, preds)

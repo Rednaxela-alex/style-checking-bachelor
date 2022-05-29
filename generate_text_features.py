@@ -1,15 +1,5 @@
 """
 This code is adapted from the source code used in the paper
-'Style Change Detection with Feed-forward Neural Networks (2019)'
-
-Title: PAN_2019
-Authors: Chaoyuan Zuo, Yu Zhao, and Ritwik Banerjee
-Date: Jul 2, 2019
-Availability: https://github.com/chzuo/PAN_2019
-"""
-
-"""
-This code is adapted from the source code used in the paper
 'Multi-label Style Change Detection by Solving a Binary Classification Problem---Notebook for PAN at CLEF 2021'
 
 Title: Multi-label Style Change Detection by Solving a Binary Classification Problem---Notebook for PAN at CLEF 2021
@@ -18,18 +8,15 @@ Date: 2021
 Availability: https://github.com/eivistr/pan21-style-change-detection-stacking-ensemble
 """
 
-from utilities import load_documents
 import json
-from nltk.tokenize import word_tokenize, sent_tokenize
-from nltk import pos_tag
-import nltk
 import numpy as np
 import pickle
 import textstat
-import time
-from tqdm import tqdm
 import os
-
+from tqdm import tqdm
+from nltk.tokenize import word_tokenize, sent_tokenize
+from nltk import pos_tag
+from utilities import load_documents
 
 def count_occurence(check_word_list, word_list_all):
     num_count = 0

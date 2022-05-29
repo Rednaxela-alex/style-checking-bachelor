@@ -13,17 +13,21 @@ import pickle
 from stacking_ensemble import LightGBMWrapper, SklearnWrapper, StackingEnsemble
 from sklearn.linear_model import LogisticRegression
 
-rf_params_textf = {"n_estimators": 5000, 
+"""
+hyperparameters for the random forest and LightGBM Classifier
+"""
+
+rf_params_textf = {"n_estimators": 1000, 
 "min_samples_split": 2, 
 "min_samples_leaf": 1, 
 "max_depth": 40}
 
-rf_params_emb = {"n_estimators": 5000, 
+rf_params_emb = {"n_estimators": 1000, 
 "min_samples_split": 2, 
 "min_samples_leaf": 1, 
 "max_depth": 40}
 
-rf_params_comb = {"n_estimators": 5000, 
+rf_params_comb = {"n_estimators": 1000, 
 "min_samples_split": 2, 
 "min_samples_leaf": 1, 
 "max_depth": 40}
@@ -69,6 +73,10 @@ lgb_params_comb={'seed': 0,
 'bagging_freq': 0,
 'min_child_samples': 10,
 'num_iterations': 2500}
+
+"""
+Methods for training for task 3 for the Sytle Change Detection Task at PAN 2022
+"""
 
 def task3_lgbm(feature):
     if(feature == "textf"):
@@ -196,6 +204,12 @@ def task3_stacking_sklearn(feature):
     with open(f'./saved_models/task3/task3_sklearn_{feature}_{round(f1 * 100)}.pickle', 'wb') as handle:
         pickle.dump(model, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
+"""
+training method for the stacking ensemble from 
+Eivind Strom avaiable in:
+https://github.com/eivistr/pan21-style-change-detection-stacking-ensemble
+"""
+
 def task3_stacking():
     x_train_textf, y_train, x_val_textf, y_val = task3_load_cases(feature="textf", shuffle=False)
     x_train_emb, _, x_val_emb, _ = task3_load_cases(feature="emb", shuffle=False)
@@ -236,14 +250,14 @@ def task3_stacking():
 def main():
     #task3_lgbm("textf")
     #task3_lgbm("emb")
-    #task3_lgbm("comb")
+    task3_lgbm("comb")
     #task3_rf("textf")
     #task3_rf("emb")
     #task3_rf("comb")
     #task3_stacking_sklearn("textf")
-    task3_stacking_sklearn("emb")
+    #task3_stacking_sklearn("emb")
     task3_stacking_sklearn("comb")
-    task3_stacking()
+    #task3_stacking()
 
 if __name__ == '__main__':
     main()

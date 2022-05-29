@@ -1,4 +1,15 @@
 import re
+
+"""
+This code is taken from the source code used in the paper
+'Multi-label Style Change Detection by Solving a Binary Classification Problem---Notebook for PAN at CLEF 2021'
+
+Title: Multi-label Style Change Detection by Solving a Binary Classification Problem---Notebook for PAN at CLEF 2021
+Authors: Eivind Strom
+Date: 2021
+Availability: https://github.com/eivistr/pan21-style-change-detection-stacking-ensemble
+"""
+
 alphabets= "([A-Za-z])"
 prefixes = "(Mr|St|Mrs|Ms|Dr|Prof|Capt|Cpt|Lt|Mt)[.]"
 suffixes = "(Inc|Ltd|Jr|Sr|Co)"

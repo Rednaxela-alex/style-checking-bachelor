@@ -13,12 +13,12 @@ from sklearn.metrics import recall_score
 from sklearn.metrics import precision_score
 from sklearn.metrics import make_scorer
 from sklearn.model_selection import cross_validate
-from sklearn.preprocessing import StandardScaler
 import os
 from lightgbm import LGBMClassifier
 
-
-
+"""
+Module to evaluate choosen classifiers the style change detection task with cross validation
+"""
 
 scoring = {'accuracy':make_scorer(accuracy_score), 
            'precision':make_scorer(precision_score),

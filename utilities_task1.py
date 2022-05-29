@@ -1,18 +1,28 @@
 import os
 import numpy as np
 import pickle
-import pandas as pd
 import torch
 import sklearn
 from utilities import _organize_parchange_embeddings, _organize_parchange_textf,_organize_authorship_embeddings,_organize_authorship_textf, load_labels
 
-from sklearn.ensemble import RandomForestClassifier
+"""
+This code is adapted from the source code used in the paper
+'Multi-label Style Change Detection by Solving a Binary Classification Problem---Notebook for PAN at CLEF 2021'
+
+Title: Multi-label Style Change Detection by Solving a Binary Classification Problem---Notebook for PAN at CLEF 2021
+Authors: Eivind Strom
+Date: 2021
+Availability: https://github.com/eivistr/pan21-style-change-detection-stacking-ensemble
+"""
 
 PAR_EMB_TRAIN_FOR_TASK1 = './features/dataset1/par_emb_train.pickle'
 PAR_EMB_VAL_FOR_TASK1 = './features/dataset1/par_emb_val.pickle'
 PAR_TEXTF_TRAIN_FOR_TASK1 = './features/dataset1/par_textf_train.pickle'
 PAR_TEXTF_VAL_FOR_TASK1 = './features/dataset1/par_textf_val.pickle'
 
+"""
+loading samples and assigning labels to it
+"""
 
 def task1_load_cases(feature, shuffle=False, seed=0):
 
@@ -54,6 +64,11 @@ def task1_load_cases(feature, shuffle=False, seed=0):
         x_val, y_val = sklearn.utils.shuffle(x_val, y_val, random_state=seed)
     return x_train, y_train, x_val, y_val
 
+"""
+loading samples and adding labels to it,
+not only consecutive paragraphs are relevant -> each paragraphcombination is a sample
+"""
+
 def task1_load_cases_comparing_each_paragraph(feature, shuffle=False, seed=0):
     if feature == "emb":
         path_train = PAR_EMB_TRAIN_FOR_TASK1
@@ -91,6 +106,10 @@ def task1_load_cases_comparing_each_paragraph(feature, shuffle=False, seed=0):
         x_train, y_train = sklearn.utils.shuffle(x_train, y_train, random_state=seed)
         x_val, y_val = sklearn.utils.shuffle(x_val, y_val, random_state=seed)
     return x_train, y_train, x_val, y_val
+
+"""
+Methods for predicting consecutive paragraphs
+"""
 
 def my_task1_parchange_predictions_emb(task1_model, par_textf, par_emb,stacking=False, lgb=False):
     assert not stacking
@@ -177,7 +196,7 @@ def my_task1_parchange_predictions_comb(task1_model, par_textf, par_emb, stackin
 
         par_emb_flat, par_textf_flat = np.array(par_emb_flat), np.array(par_textf_flat)
         if stacking:
-            probabilities = task1_model.predict_proba([par_emb_flat, par_textf_flat])
+            paragraph_preds_proba = task1_model.predict_proba([par_emb_flat, par_textf_flat])
         else:
             if lgb:
                 paragraph_preds_proba = task1_model.predict(comb)

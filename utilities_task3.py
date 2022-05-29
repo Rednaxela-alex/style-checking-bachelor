@@ -5,11 +5,25 @@ import sklearn
 import os
 from utilities import _organize_parchange_embeddings, _organize_parchange_textf, load_labels
 
+"""
+This code is adapted from the source code used in the paper
+'Multi-label Style Change Detection by Solving a Binary Classification Problem---Notebook for PAN at CLEF 2021'
+
+Title: Multi-label Style Change Detection by Solving a Binary Classification Problem---Notebook for PAN at CLEF 2021
+Authors: Eivind Strom
+Date: 2021
+Availability: https://github.com/eivistr/pan21-style-change-detection-stacking-ensemble
+"""
+
 PAR_EMB_TRAIN_FOR_TASK3 = './features/dataset3/par_emb_train.pickle'
 PAR_EMB_VAL_FOR_TASK3 = './features/dataset3/par_emb_val.pickle'
 PAR_TEXTF_TRAIN_FOR_TASK3 = './features/dataset3/par_textf_train.pickle'
 PAR_TEXTF_VAL_FOR_TASK3 = './features/dataset3/par_textf_val.pickle'
 
+
+"""
+loading samples and assigning labels to it
+"""
 
 def task3_load_cases(feature, shuffle=False, seed=0):
     """Utility function for loading binary cases for task 2.
@@ -53,6 +67,9 @@ def task3_load_cases(feature, shuffle=False, seed=0):
         x_val, y_val = sklearn.utils.shuffle(x_val, y_val, random_state=seed)
     return x_train, y_train, x_val, y_val
 
+"""
+Methods for predicting consecutive paragraphs
+"""
 
 def my_task3_parchange_predictions_comb(task3_model, par_emb, par_textf,stacking=False,lgb=False):
     assert not (stacking and lgb)

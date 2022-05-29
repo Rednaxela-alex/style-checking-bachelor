@@ -248,16 +248,16 @@ def task3_stacking():
 
 
 def main():
-    #task3_lgbm("textf")
-    #task3_lgbm("emb")
+    task3_lgbm("textf")
+    task3_lgbm("emb")
     task3_lgbm("comb")
-    #task3_rf("textf")
-    #task3_rf("emb")
-    #task3_rf("comb")
-    #task3_stacking_sklearn("textf")
-    #task3_stacking_sklearn("emb")
+    task3_rf("textf")
+    task3_rf("emb")
+    task3_rf("comb")
+    task3_stacking_sklearn("textf")
+    task3_stacking_sklearn("emb")
     task3_stacking_sklearn("comb")
-    #task3_stacking()
+    task3_stacking()
 
 if __name__ == '__main__':
     main()

@@ -22,14 +22,14 @@ TASK1_RF_MODEL = os.path.join(sys.path[0], "saved_models/task1/task1_rf_textf_65
 TASK1_SKLEARN_MODEL = os.path.join(sys.path[0], "saved_models/task1/task1_sklearn_textf_68.pickle")
 TASK1_STACKING_MODEL = os.path.join(sys.path[0], "saved_models/task1/task1_ensemble_66.pickle")
 
-task1_models = []
+task1_models = [TASK1_LGBM_MODEL,TASK1_RF_MODEL,TASK1_SKLEARN_MODEL,TASK1_STACKING_MODEL]
 
 TASK2_LGBM_MODEL = os.path.join(sys.path[0], "saved_models/task2/task2_lgbm_comb_63.pickle")
 TASK2_RF_MODEL = os.path.join(sys.path[0], "saved_models/task2/task2_rf_comb_50.pickle")
 TASK2_SKLEARN_MODEL = os.path.join(sys.path[0], "saved_models/task2/task2_sklearn_comb_62.pickle")
 TASK2_STACKING_MODEL = os.path.join(sys.path[0], "saved_models/task2/task2_ensemble_64.pickle")
 
-task2_models = []
+task2_models = [TASK2_LGBM_MODEL,TASK2_RF_MODEL,TASK2_SKLEARN_MODEL,TASK2_STACKING_MODEL]
 
 
 TASK3_LGBM_MODEL = os.path.join(sys.path[0], "saved_models/task3/task3_lgbm_emb_60.pickle")
@@ -37,7 +37,7 @@ TASK3_RF_MODEL = os.path.join(sys.path[0], "saved_models/task3/task3_rf_emb_58.p
 TASK3_SKLEARN_MODEL = os.path.join(sys.path[0], "saved_models/task3/task3_sklearn_emb_60.pickle")
 TASK3_STACKING_MODEL = os.path.join(sys.path[0], "saved_models/task3/task3_ensemble_63.pickle")
 
-task3_models = [TASK3_LGBM_MODEL]
+task3_models = [TASK3_LGBM_MODEL,TASK3_RF_MODEL,TASK3_SKLEARN_MODEL,TASK3_STACKING_MODEL]
 
 
 def typeconverter(obj):
@@ -72,8 +72,8 @@ def main(data_folder):
     print(f"Loaded {len(docs_dataset1)} documents ...")
 
     # Generate document and paragraph features
-    #doc_emb, par_emb = generate_embeddings(docs_dataset1)
-    #doc_textf, par_textf = generate_features(docs_dataset1)
+    doc_emb, par_emb = generate_embeddings(docs_dataset1)
+    doc_textf, par_textf = generate_features(docs_dataset1)
 
 
     # Task 1
@@ -105,15 +105,15 @@ def main(data_folder):
             
             with open(os.path.join(dir + '/dataset1/', file_name), 'w') as file_handle:
                 json.dump(solution, file_handle, default=typeconverter)
-    #del doc_emb, doc_textf, par_emb, par_textf
+    del doc_emb, doc_textf, par_emb, par_textf
 
     # Load documents
     docs_dataset2, _ = load_documents(data_folder + '/dataset2')
     print(f"Loaded {len(docs_dataset2)} documents ...")
 
     # Generate document and paragraph features
-    #doc_emb, par_emb = generate_embeddings(docs_dataset2)
-    #doc_textf, par_textf = generate_features(docs_dataset2)
+    doc_emb, par_emb = generate_embeddings(docs_dataset2)
+    doc_textf, par_textf = generate_features(docs_dataset2)
 
     # Task 2
     print("Task 2 predictions ...")
@@ -146,7 +146,7 @@ def main(data_folder):
             
             with open(os.path.join(dir +'/dataset2/', file_name), 'w') as file_handle:
                 json.dump(solution, file_handle, default=typeconverter)
-    #del doc_emb, doc_textf, par_emb, par_textf
+    del doc_emb, doc_textf, par_emb, par_textf
 
     # Load documents
     docs_dataset3, doc_ids_dataset3 = load_documents(data_folder + '/dataset3')

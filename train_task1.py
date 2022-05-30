@@ -264,15 +264,15 @@ def task1_stacking():
         pickle.dump(ensemble, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 def main():
-    #task1_lgbm("textf")
-    #task1_lgbm("emb")
-    #task1_lgbm("comb")
-    #task1_rf("textf")
-    #task1_rf("emb")
-    #task1_rf("comb")
-    #task1_stacking_sklearn("textf")
-    #task1_stacking_sklearn("emb")
-    #task1_stacking_sklearn("comb")
+    task1_lgbm("textf")
+    task1_lgbm("emb")
+    task1_lgbm("comb")
+    task1_rf("textf")
+    task1_rf("emb")
+    task1_rf("comb")
+    task1_stacking_sklearn("textf")
+    task1_stacking_sklearn("emb")
+    task1_stacking_sklearn("comb")
     task1_stacking()
 
 if __name__ == '__main__':

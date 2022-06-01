@@ -28,7 +28,12 @@ VAL_FOLDER_DATASET3 = "./input_dir/dataset3/validation/"
 TEST_FOLDER_DATASET3 = "./input_dir/dataset3/test/"
 
 def lgbm_macro_f1(y_hat, data):
-    """Callback function for LightGBM early stopping by macro F1-score."""
+    """
+    Callback function for LightGBM early stopping by macro F1-score.
+    :param y_hat: prediction array
+    :param data: truth data
+    :return f1 score
+    """
 
     y_true = data.get_label()
     y_hat = np.where(y_hat > 0.5, 1, 0)
@@ -36,7 +41,11 @@ def lgbm_macro_f1(y_hat, data):
 
 
 def load_documents(folder_path):
-    """Load documents and document ids from folder path."""
+    """
+    Load documents and document ids from folder path.
+    :param folder_path: path to the problem files
+    :return documents split into paragraphs, problem ids
+    """
 
     if folder_path == 'train_dataset1':
         folder_path = TRAIN_FOLDER_DATASET1
@@ -71,7 +80,11 @@ def load_documents(folder_path):
 
 
 def load_labels(folder_path):
-    """Load all labels from folder path."""
+    """
+    Load all labels from folder path.
+    :param folder_path: path to the ground-truth-files
+    :return file ids, number authors, multiauthor (0,1), style-changes, paragraph-authors
+    """
 
     if folder_path == 'train_dataset1':
         folder_path = TRAIN_FOLDER_DATASET1
@@ -106,8 +119,13 @@ def load_labels(folder_path):
     return ids, y_nauth, y_multi, y_changes, y_para_auth
 
 def _organize_parchange_embeddings(par_embeddings, labels_change):
-    """Organize embeddings per document and paragraph change labels per document
-    into a flat array of binary cases. Used in task 2."""
+    """
+    Organize embeddings per document and paragraph change labels per document
+    into a flat array of binary cases.
+    :param par_embeddings: paragraph embeddings
+    :param labels_change: label style change
+    :return combined paraembeddings with style change labels
+    """
 
     assert len(par_embeddings) == len(labels_change)
     n = len(par_embeddings)
@@ -126,8 +144,13 @@ def _organize_parchange_embeddings(par_embeddings, labels_change):
 
 
 def _organize_parchange_textf(paragraph_textf, labels_change):
-    """Organize text features per document and paragraph change labels per document
-    into a flat array of binary cases. Used in task 2."""
+    """
+    Organize text features per document and paragraph change labels per document
+    into a flat array of binary cases.
+    :param paragraph_textf: paragraph text features
+    :param labels_change: label style change
+    :return combined paraembeddings with style change labels
+    """
 
     assert len(paragraph_textf) == len(labels_change)
     n = len(paragraph_textf)
@@ -143,9 +166,13 @@ def _organize_parchange_textf(paragraph_textf, labels_change):
 
 
 def _map_authorhip_to_paragraphs(labels_paragraph_author):
-    """Map authorship labels per document to a binary label determining whether two paragraphs have
+    """
+    Map authorship labels per document to a binary label determining whether two paragraphs have
     the same author. Return a list of labels per document and tuples per document, containing the
-    indices of the compared paragraphs. Used in task 3."""
+    indices of the compared paragraphs
+    :param labels_paragraph_author: paragraph author labels
+    :return: style change labels of all paragraph pairs, paragraph pairs in order of the labels
+    """
 
     paragraph_pairs = []
     labels = []
@@ -166,6 +193,13 @@ def _map_authorhip_to_paragraphs(labels_paragraph_author):
 
 
 def _organize_authorship_embeddings(paragraph_embeddings, labels_paragraph_author):
+    """
+    Organize embeddings per document and authorship labels per document into a flat array
+    of binary cases
+    :param par_embeddings: paragraph embeddings
+    :param labels_paragraph_author:  paragraph author labels
+    return flat embeddings, flat array of style change labels
+    """
     assert len(paragraph_embeddings) == len(labels_paragraph_author)
     labels, paragraph_pairs = _map_authorhip_to_paragraphs(labels_paragraph_author)
     n = len(paragraph_embeddings)
@@ -181,8 +215,14 @@ def _organize_authorship_embeddings(paragraph_embeddings, labels_paragraph_autho
 
 
 def _organize_authorship_textf(paragraph_textf, labels_paragraph_author):
-    """Organize embeddings per document and authorship labels per document into a flat array
-    of binary cases. Used in task 3."""
+    """
+    Organize text features per document and authorship labels per document into a flat array
+    of binary cases
+    :param paragraph_textf: paragraph text features
+    :param labels_paragraph_author:  paragraph author labels
+    return flat embeddings, flat array of style change labels
+    """
+    """
 
     assert len(paragraph_textf) == len(labels_paragraph_author)
     

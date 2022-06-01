@@ -18,7 +18,7 @@ def tune_lgbm(x_train, y_train, x_val, y_val, save_as):
     :param y_train: labels for the training data
     :param x_val: validation data
     :param y_val: labels for the validation data
-    :param save_as: name when model is saved
+    :param save_as: name how model is saved
     """
 
     train_ds = lgb.Dataset(x_train, label=y_train)

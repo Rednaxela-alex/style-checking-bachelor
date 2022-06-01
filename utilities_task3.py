@@ -21,13 +21,16 @@ PAR_TEXTF_TRAIN_FOR_TASK3 = './features/dataset3/par_textf_train.pickle'
 PAR_TEXTF_VAL_FOR_TASK3 = './features/dataset3/par_textf_val.pickle'
 
 
-"""
-loading samples and assigning labels to it
-"""
+
 
 def task3_load_cases(feature, shuffle=False, seed=0):
-    """Utility function for loading binary cases for task 2.
-    Specify 'emb' or 'textf' feature set."""
+    """
+    loading samples by comparing each parapgraph to eachother and assigning labels to it
+    :param feature: string whether to load embeddings or text features
+    :param shuffle: return shuffled train and val data
+    :param seed: seed for random_state relevant for shuffeling
+    :return labeled training and validation data
+    """
     if feature == "emb":
         path_train = PAR_EMB_TRAIN_FOR_TASK3
         path_val = PAR_EMB_VAL_FOR_TASK3
@@ -67,11 +70,17 @@ def task3_load_cases(feature, shuffle=False, seed=0):
         x_val, y_val = sklearn.utils.shuffle(x_val, y_val, random_state=seed)
     return x_train, y_train, x_val, y_val
 
-"""
-Methods for predicting consecutive paragraphs
-"""
 
 def my_task3_parchange_predictions_comb(task3_model, par_emb, par_textf,stacking=False,lgb=False):
+    """
+    binary prediction between paragraphs whether there is a style change or not
+    :param task3_model: trained classifier
+    :param par_emb: generated paragraph embeddings
+    :param par_textf: generated paragraph text features
+    :param stacking: True if task3_model is stacking_ensemble classifier
+    :param lgb: True if task3_model is LightGBMClassifier
+    :return binary prediction for combined paragraph text-features and embeddings
+    """
     assert not (stacking and lgb)
     final_preds = []
 
@@ -105,6 +114,15 @@ def my_task3_parchange_predictions_comb(task3_model, par_emb, par_textf,stacking
     return final_preds
 
 def my_task3_parchange_predictions_emb(task3_model, par_emb, par_textf,stacking=False,lgb=False):
+    """
+    binary prediction between paragraphs whether there is a style change or not
+    :param task3_model: trained classifier
+    :param par_emb: generated paragraph embeddings
+    :param par_textf: generated paragraph text features
+    :param stacking: True if task3_model is stacking_ensemble classifier
+    :param lgb: True if task3_model is LightGBMClassifier
+    :return binary prediction for paragraph embeddings
+    """
     assert not stacking
     final_preds = []
     
@@ -132,6 +150,15 @@ def my_task3_parchange_predictions_emb(task3_model, par_emb, par_textf,stacking=
     return final_preds
 
 def my_task3_parchange_predictions_textf(task3_model,par_emb, par_textf,stacking=False,lgb=False):
+    """
+    binary prediction between paragraphs whether there is a style change or not
+    :param task3_model: trained classifier
+    :param par_emb: generated paragraph embeddings
+    :param par_textf: generated paragraph text features
+    :param stacking: True if task3_model is stacking_ensemble classifier
+    :param lgb: True if task3_model is LightGBMClassifier
+    :return binary prediction for paragraph text-features
+    """
     assert not stacking
     final_preds = []
     

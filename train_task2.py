@@ -212,15 +212,11 @@ def task2_stacking_sklearn(feature):
     with open(f'./saved_models/task2/task2_sklearn_{feature}_{round(f1 * 100)}.pickle', 'wb') as handle:
         pickle.dump(model, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
-"""
-training method for the stacking ensemble from 
-Eivind Strom avaiable in:
-https://github.com/eivistr/pan21-style-change-detection-stacking-ensemble
-"""
-
 def task2_stacking():
     """
-    training stacking ensemble for task1 on training dataset 1
+    training method for the stacking ensemble for training on train dataset 2
+    from  Eivind Strom avaiable in:
+    https://github.com/eivistr/pan21-style-change-detection-stacking-ensemble
     """
     x_train_textf, y_train, x_val_textf, y_val = task2_load_cases(feature="textf", shuffle=False)
     x_train_emb, _, x_val_emb, _ = task2_load_cases(feature="emb", shuffle=False)

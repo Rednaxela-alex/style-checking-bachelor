@@ -74,11 +74,13 @@ lgb_params_comb = {'seed': 0,
 'min_child_samples': 20,
 'num_iterations': 2500}
 
-"""
-Methods for training for task 1 for the Sytle Change Detection Task at PAN 2022
-"""
+
 
 def task1_lgbm(feature):
+    """
+    training LightGBMClassifier for task1 on training dataset 1
+    :param feature: string to choose to load embeddings, text-features or a combination
+    """
     if(feature == "textf"):
         x_train, y_train, _, _ = task1_load_cases_comparing_each_paragraph(feature="textf", shuffle=True)
         _, _, x_val, y_val = task1_load_cases(feature="textf", shuffle=False)
@@ -123,6 +125,10 @@ def task1_lgbm(feature):
         pickle.dump(model, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 def task1_rf(feature):
+    """
+    training random forest classifier for task1 on training dataset 1
+    :param feature: string to choose to load embeddings, text-features or a combination
+    """
     if(feature == "textf"):
         x_train, y_train, _, _ = task1_load_cases_comparing_each_paragraph(feature="textf", shuffle=True)
         _, _, x_val, y_val = task1_load_cases(feature="textf", shuffle=False)
@@ -164,6 +170,10 @@ def task1_rf(feature):
         pickle.dump(model, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 def task1_stacking_sklearn(feature):
+    """
+    training stacking classifier from the sklearn library for task1 on training dataset 1
+    :param feature: string to choose to load embeddings, text-features or a combination
+    """
     if(feature == "textf"):
         x_train, y_train, _, _ = task1_load_cases_comparing_each_paragraph(feature="textf", shuffle=True)
         _, _, x_val, y_val = task1_load_cases(feature="textf", shuffle=False)
@@ -222,6 +232,9 @@ Eivind Strom avaiable in:
 https://github.com/eivistr/pan21-style-change-detection-stacking-ensemble
 """ 
 def task1_stacking():
+    """
+    training stacking ensemble for task1 on training dataset 1
+    """
     x_train_textf, y_train, _, _ = task1_load_cases_comparing_each_paragraph(feature="textf", shuffle=True)
     x_train_emb, _, _, _ = task1_load_cases_comparing_each_paragraph(feature="emb", shuffle=True)
     _, _, x_val_textf, y_val = task1_load_cases(feature="textf", shuffle=False)

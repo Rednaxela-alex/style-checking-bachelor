@@ -36,7 +36,7 @@ rf = RandomForestClassifier()
 
 def random_search_CV(X,y,X_val, y_val, folds, save_as):
     """
-    tunes the LightGBM with the optuna library and saves the best performing model
+    random serach cross validation for the random forest classifier, very timeconsuming
     :param X: datasamples
     :param y: labels for the datasamples
     :param X_val: validation data

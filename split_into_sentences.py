@@ -21,6 +21,10 @@ http = "(http|https)[:]"
 digits = "([0-9])"
 
 def par_into_sentences(text):
+    """
+    splits text into sentences
+    :param text: text that will be split
+    """
     text = " " + text + "  "
     text = text.replace("\n"," ")
     text = re.sub(prefixes,"\\1<prd>",text)

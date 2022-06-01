@@ -35,6 +35,14 @@ random_grid = {'n_estimators': n_estimators,
 rf = RandomForestClassifier()
 
 def random_search_CV(X,y,X_val, y_val, folds, save_as):
+    """
+    tunes the LightGBM with the optuna library and saves the best performing model
+    :param X: datasamples
+    :param y: labels for the datasamples
+    :param X_val: validation data
+    :param y_val: labels for the validation data
+    :param save_as: name how model is saved
+    """
     rfc_random = RandomizedSearchCV(estimator=rf, param_distributions=random_grid, n_iter=250, cv=folds,verbose=2, random_state=42, n_jobs=-1)
     rfc_random.fit(X,y)
     preds = rfc_random.predict(X_val)

@@ -28,6 +28,13 @@ scoring = {'accuracy':make_scorer(accuracy_score),
 
 
 def models_evaluation(X, y, folds):
+    """
+    evluates models on the data with cross validation with the given number of folds
+    :param X: datasamples
+    :param y: labels for the datasamples
+    :param folds: number of folds for the cross validation
+    :return table of metrics for the evaluated models
+    """
 
     lgb_model = LGBMClassifier()
     linear_svc_model = LinearSVC(dual=False)

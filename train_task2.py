@@ -73,11 +73,11 @@ lgb_params_comb = {'seed': 0,
 'min_child_samples': 20,
 'num_iterations': 2500}
 
-"""
-Methods for training for task 2 for the Sytle Change Detection Task at PAN 2022
-"""
-
 def task2_lgbm(feature):
+    """
+    training LightGBMClassifier for task2 on training dataset 2
+    :param feature: string to choose to load embeddings, text-features or a combination
+    """
     if(feature == "textf"):
         x_train, y_train, x_val, y_val = task2_load_cases(feature="textf", shuffle=False)
         lgb_params = lgb_params_textf
@@ -119,6 +119,10 @@ def task2_lgbm(feature):
 
 
 def task2_rf(feature):
+    """
+    training random forest classifier for task2 on training dataset 2
+    :param feature: string to choose to load embeddings, text-features or a combination
+    """
     if(feature == "textf"):
         x_train, y_train, x_val, y_val = task2_load_cases(feature="textf", shuffle=False)
         rf_params = rf_params_textf
@@ -156,6 +160,10 @@ def task2_rf(feature):
         pickle.dump(model, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 def task2_stacking_sklearn(feature):
+    """
+    training stacking classifier from the sklearn library for task2 on training dataset 2
+    :param feature: string to choose to load embeddings, text-features or a combination
+    """
     if(feature == "textf"):
         x_train, y_train, x_val, y_val = task2_load_cases(feature="textf", shuffle=False)
         lgb_params = lgb_params_textf
@@ -211,6 +219,9 @@ https://github.com/eivistr/pan21-style-change-detection-stacking-ensemble
 """
 
 def task2_stacking():
+    """
+    training stacking ensemble for task1 on training dataset 1
+    """
     x_train_textf, y_train, x_val_textf, y_val = task2_load_cases(feature="textf", shuffle=False)
     x_train_emb, _, x_val_emb, _ = task2_load_cases(feature="emb", shuffle=False)
 

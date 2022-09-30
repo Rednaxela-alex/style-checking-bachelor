@@ -6,6 +6,7 @@ import numpy as np
 from sklearn.metrics import accuracy_score, f1_score
 import os
 import pickle
+import time
 from sklearn.ensemble import RandomForestClassifier, StackingClassifier
 from lightgbm import LGBMClassifier
 import os
@@ -17,20 +18,13 @@ from sklearn.linear_model import LogisticRegression
 hyperparameters for the random forest and LightGBM Classifier
 """
 
-rf_params_textf = {"n_estimators": 1000, 
-"min_samples_split": 2, 
-"min_samples_leaf": 1, 
-"max_depth": 40}
+rf_params_textf ={"n_estimators": 150, "min_samples_split": 4, "min_samples_leaf": 1, "max_features": 0.25, "max_depth": None}
 
-rf_params_emb = {"n_estimators": 1000, 
-"min_samples_split": 2, 
-"min_samples_leaf": 1, 
-"max_depth": 40}
 
-rf_params_comb = {"n_estimators": 1000, 
-"min_samples_split": 2, 
-"min_samples_leaf": 1, 
-"max_depth": 40}
+rf_params_emb = {"n_estimators": 150, "min_samples_split": 4, "min_samples_leaf": 1, "max_features": 0.25, "max_depth": None}
+
+rf_params_comb = {"n_estimators": 150, "min_samples_split": 4, "min_samples_leaf": 1, "max_features": 0.25, "max_depth": None}
+
 
 lgb_params_emb ={'seed': 0,
 'objective': 'binary',
@@ -97,8 +91,11 @@ def task3_lgbm(feature):
     val_ds = lgb.Dataset(x_val, label=y_val)
 
     #training
+    start = time.time()
     model = lgb.train(lgb_params, train_ds, valid_sets=[train_ds, val_ds], feval=lgbm_macro_f1,
-                     num_boost_round=10000)
+                     num_boost_round=1000)
+    end = time.time()
+    print(end-start)
    
 
     #predicting on validationset
@@ -115,7 +112,7 @@ def task3_lgbm(feature):
         os.makedirs('./saved_models/task3')
 
     #saving the model
-    with open(f'./saved_models/task3/task3_lgbm_{feature}_{round(f1 * 100)}.pickle', 'wb') as handle:
+    with open(f'./saved_models/task3/task3_lgbm_{feature}_{round(f1 * 100)}_{end-start}.pickle', 'wb') as handle:
         pickle.dump(model, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 def task3_rf(feature):
@@ -136,7 +133,11 @@ def task3_rf(feature):
     model.set_params(**rf_params)
     
 
+    start = time.time()
     model.fit(x_train, y_train)
+
+    end = time.time()
+    print(end-start)
 
     
     preds =  model.predict(x_val)
@@ -152,7 +153,7 @@ def task3_rf(feature):
         os.makedirs('./saved_models/task3')
 
     #save the model
-    with open(f'./saved_models/task3/task3_rf_{feature}_{round(f1 * 100)}.pickle', 'wb') as handle:
+    with open(f'./saved_models/task3/task3_rf_{feature}_{round(f1 * 100)}_{end-start}.pickle', 'wb') as handle:
         pickle.dump(model, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 def task3_stacking_sklearn(feature):
@@ -185,7 +186,10 @@ def task3_stacking_sklearn(feature):
     model = StackingClassifier(
     estimators=estimators, final_estimator=LogisticRegression())
 
+    start = time.time()
     model.fit(x_train, y_train)
+    end = time.time()
+    print(end-start)
 
 
     preds =  model.predict(x_val)
@@ -201,7 +205,7 @@ def task3_stacking_sklearn(feature):
         os.makedirs('./saved_models/task3')
 
     #save the model
-    with open(f'./saved_models/task3/task3_sklearn_{feature}_{round(f1 * 100)}.pickle', 'wb') as handle:
+    with open(f'./saved_models/task3/task3_sklearn_{feature}_{round(f1 * 100)}_{end-start}.pickle', 'wb') as handle:
         pickle.dump(model, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 """
@@ -224,6 +228,8 @@ def task3_stacking():
 
     ensemble = StackingEnsemble()
 
+    start = time.time()
+
     # Training ensemble on embeddings
     ensemble.add_to_ensemble(classifiers_emb, x_train_emb, y_train, x_val_emb, y_val, feature_set_name="emb")
 
@@ -231,6 +237,9 @@ def task3_stacking():
     ensemble.add_to_ensemble(classifiers_textf, x_train_textf, y_train, x_val_textf, y_val, feature_set_name="textf")
 
     ensemble.train_meta_learner()
+
+    end = time.time()
+    print(end-start)
 
     preds = ensemble.predict([x_val_emb, x_val_textf])
 
@@ -242,21 +251,21 @@ def task3_stacking():
     if not os.path.exists('./saved_models/task3'):
         os.makedirs('./saved_models/task3')
 
-    with open(f'./saved_models/task3/task3_ensemble_{round(f1 * 100)}.pickle', 'wb') as handle:
+    with open(f'./saved_models/task3/task3_ensemble_{round(f1 * 100)}_{end-start}.pickle', 'wb') as handle:
         pickle.dump(ensemble, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 
 
 def main():
-    task3_lgbm("textf")
+    #task3_lgbm("textf")
     task3_lgbm("emb")
-    task3_lgbm("comb")
-    task3_rf("textf")
+    #task3_lgbm("comb")
+    #task3_rf("textf")
     task3_rf("emb")
-    task3_rf("comb")
-    task3_stacking_sklearn("textf")
+    #task3_rf("comb")
+    #task3_stacking_sklearn("textf")
     task3_stacking_sklearn("emb")
-    task3_stacking_sklearn("comb")
+    #task3_stacking_sklearn("comb")
     task3_stacking()
 
 if __name__ == '__main__':

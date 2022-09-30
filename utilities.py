@@ -4,6 +4,7 @@ import json
 import numpy as np
 import sklearn
 import os
+import torch
 
 
 """
@@ -34,6 +35,28 @@ def lgbm_macro_f1(y_hat, data):
     y_hat = np.where(y_hat > 0.5, 1, 0)
     return 'f1', sklearn.metrics.f1_score(y_true, y_hat, average='macro'), True
 
+def get_dir_from_model(model):
+    if 'lgbm' in model:
+        dir = '/lgbm_output_dir'
+    elif 'rf' in model:
+        dir = '/rf_output_dir'
+    elif 'sklearn' in model:
+        dir = '/sklearn_output_dir'
+    elif 'ensemble' in model:
+        dir = '/ensemble_output_dir'
+    else:
+        ValueError
+    return dir
+
+def typeconverter(obj):
+    if isinstance(obj, np.integer):
+        return int(obj)
+    elif isinstance(obj, np.floating):
+        return float(obj)
+    elif isinstance(obj, np.ndarray):
+        return obj.tolist()
+    elif torch.is_tensor(obj):
+        return obj.tolist()   
 
 def load_documents(folder_path):
     """Load documents and document ids from folder path."""
@@ -145,7 +168,7 @@ def _organize_parchange_textf(paragraph_textf, labels_change):
 def _map_authorhip_to_paragraphs(labels_paragraph_author):
     """Map authorship labels per document to a binary label determining whether two paragraphs have
     the same author. Return a list of labels per document and tuples per document, containing the
-    indices of the compared paragraphs. Used in task 3."""
+    indices of the compared paragraphs. Used in task 2."""
 
     paragraph_pairs = []
     labels = []
@@ -182,7 +205,7 @@ def _organize_authorship_embeddings(paragraph_embeddings, labels_paragraph_autho
 
 def _organize_authorship_textf(paragraph_textf, labels_paragraph_author):
     """Organize embeddings per document and authorship labels per document into a flat array
-    of binary cases. Used in task 3."""
+    of binary cases. Used in task 2."""
 
     assert len(paragraph_textf) == len(labels_paragraph_author)
     

@@ -62,7 +62,7 @@ class SklearnWrapper(object):
 class LightGBMWrapper(object):
     """Wrapper object for LightGBMClassifier."""
 
-    def __init__(self, clf, seed=SEED, params=None):
+    def __init__(self, clf, seed=SEED, params={}):
         params['feature_fraction_seed'] = seed
         params['bagging_seed'] = seed
         self.params = params

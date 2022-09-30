@@ -77,7 +77,7 @@ def my_task2_binary_predictions_comb(task2_model, par_emb, par_textf, stacking=F
                 combined_textf = np.append(par_textf[doc_idx][j], par_textf[doc_idx][i])
                 par_emb_flat.append(combined_emb)
                 par_textf_flat.append(combined_textf)
-    par_emb_flat, par_textf_flat = np.array(par_emb_flat), np.array(par_textf_flat)
+    #par_emb_flat, par_textf_flat = np.array(par_emb_flat), np.array(par_textf_flat)
     combined_features = np.append(par_textf_flat, par_emb_flat, axis=1)
 
     if stacking:
@@ -171,5 +171,40 @@ def my_task2_final_authorship_predictions(task2_binary_preds, par_emb, par_textf
 
                 
             auth.append(auth_preds[i])  
+        final_preds.append(auth_preds)
+    return final_preds
+
+def my_task2_final_authorship_predictions_without_mean(task2_binary_preds, par_emb, par_textf):
+    n_docs = len(par_emb)
+    max_auth = 5
+    final_preds = []
+
+    flat_pred_counter = 0
+    for doc_idx in range(n_docs):
+        n_par = len(par_emb[doc_idx])
+
+    
+        # Else
+        auth_preds = np.array([0] * n_par)
+        auth_preds[0] = 1
+        next_auth = 2  # the next authors would be number 2
+        for i in range(1, n_par):
+            similarity_score = []
+
+            for j in range(0, i):
+                pred = task2_binary_preds[flat_pred_counter]
+                similarity_score.append(pred)
+                flat_pred_counter += 1
+            
+            if min(similarity_score) >= 0.5:
+                if next_auth <= max_auth:  # if we are below 5 different authors, assign new author and update next
+                    auth_preds[i] = next_auth
+                    next_auth += 1
+                else:  # we have assigned all authours, thus we select the most similar paragraph (even if all are < threshold)
+                    i_most_similar =  np.argmin(similarity_score)
+                    auth_preds[i] = auth_preds[i_most_similar]
+            else:
+                i_most_similar =  np.argmin(similarity_score)
+                auth_preds[i] = auth_preds[i_most_similar]
         final_preds.append(auth_preds)
     return final_preds

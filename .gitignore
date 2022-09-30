@@ -10,3 +10,5 @@ saved_models/
 rfc_tuning/
 optuna/
 launch.json
+eval_*/
+validation_playground.py

@@ -47,7 +47,7 @@ pipenv run .\train_task<task_nr>.py -> saving models in "./saved_models/task<tas
 
 - generate output_files:
 ```
-pipenv run .\main.py -i ./input_test -> will save in <classfier_name>_output_dir/dataset<task_nr>/solution-problem-x.json
+pipenv run .\main_task<task_nr>.py -i ./input_test ./output_dir -> will save in ./output_dir/<classfier_name>_output_dir/dataset<task_nr>/solution-problem-x.json
 ```
 
 - output_verifier:
@@ -57,7 +57,7 @@ pipenv run .\output_verifier.py --input ./input_test --output ./<model_name>_out
 
 - evaluator: 
 ```
-pipenv run .\evaluator.py --truth ./input_test --prediction ./<model_name>_output_dir --output ./eval_output_<model_name>
+pipenv run .\evaluator.py --truth ./input_test --prediction ./output_dir/<classfier_name>_output_dir --output ./eval_output_<model_name>
 ```
 
 

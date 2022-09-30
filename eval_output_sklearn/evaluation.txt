@@ -16,45 +16,5 @@ measure{
 }
 measure{
   key: "task3_f1_score"
-  value: "0.31171803478791577"
-}
-measure{
-  key: "task1_f1_score"
-  value: "0.7206986899563319"
-}
-measure{
-  key: "task2_f1_score"
-  value: "0.363745621486196"
-}
-measure{
-  key: "task2_der"
-  value: "0.6469591333333333"
-}
-measure{
-  key: "task2_jer"
-  value: "0.5933378666666667"
-}
-measure{
-  key: "task3_f1_score"
-  value: "0.5894554443296165"
-}
-measure{
-  key: "task1_f1_score"
-  value: "0.7206986899563319"
-}
-measure{
-  key: "task2_f1_score"
-  value: "0.363745621486196"
-}
-measure{
-  key: "task2_der"
-  value: "0.6469591333333333"
-}
-measure{
-  key: "task2_jer"
-  value: "0.5933378666666667"
-}
-measure{
-  key: "task3_f1_score"
   value: "0.5894554443296165"
 }

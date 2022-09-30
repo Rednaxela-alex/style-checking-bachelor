@@ -19,11 +19,14 @@ PAR_EMB_VAL_FOR_TASK2 = './features/dataset2/par_emb_val.pickle'
 PAR_TEXTF_TRAIN_FOR_TASK2 = './features/dataset2/par_textf_train.pickle'
 PAR_TEXTF_VAL_FOR_TASK2 = './features/dataset2/par_textf_val.pickle'
 
-"""
-loading samples by comparing each parapgraph to eachother and assigning labels to it
-"""
-
 def task2_load_cases(feature, shuffle=False, seed=0):
+    """
+    loading samples by comparing each parapgraph to eachother and assigning labels to it
+    :param feature: string whether to load embeddings or text features
+    :param shuffle: return shuffled train and val data
+    :param seed: seed for random_state relevant for shuffeling
+    :return labeled training and validation data
+    """
     if feature == "emb":
         path_train = PAR_EMB_TRAIN_FOR_TASK2
         path_val = PAR_EMB_VAL_FOR_TASK2
@@ -61,11 +64,16 @@ def task2_load_cases(feature, shuffle=False, seed=0):
         x_val, y_val = sklearn.utils.shuffle(x_val, y_val, random_state=seed)
     return x_train, y_train, x_val, y_val
 
-"""
-binary predection between paragraphs whether there is a style change or not
-"""
-
 def my_task2_binary_predictions_comb(task2_model, par_emb, par_textf, stacking=False, lgb=False):
+    """
+    binary prediction between paragraphs whether there is a style change or not
+    :param task2_model: trained classifier
+    :param par_emb: generated paragraph embeddings
+    :param par_textf: generated paragraph text features
+    :param stacking: True if task2_model is stacking_ensemble classifier
+    :param lgb: True if task2_model is LightGBMClassifier
+    :return binary prediction for combined features
+    """
     assert not (stacking and lgb)
     par_emb_flat, par_textf_flat = [], []
     n_docs = len(par_emb)
@@ -90,11 +98,18 @@ def my_task2_binary_predictions_comb(task2_model, par_emb, par_textf, stacking=F
             binary_preds = [i[1] for i in probabilities]
     return binary_preds
 
-"""
-based on the binary prediction assigning author to each paragraph
-"""
+
 
 def my_task2_binary_predictions_emb(task2_model, par_emb,par_textf, stacking=False, lgb=False):
+    """
+    binary prediction between paragraphs whether there is a style change or not
+    :param task2_model: trained classifier
+    :param par_emb: generated paragraph embeddings
+    :param par_textf: generated paragraph text features
+    :param stacking: True if task2_model is stacking_ensemble classifier
+    :param lgb: True if task2_model is LightGBMClassifier
+    :return binary prediction for embeddings
+    """
     assert not stacking
     par_emb_flat=[]
     n_docs = len(par_emb)
@@ -115,6 +130,15 @@ def my_task2_binary_predictions_emb(task2_model, par_emb,par_textf, stacking=Fal
     return binary_preds
 
 def my_task2_binary_predictions_textf(task2_model,par_emb, par_textf, stacking=False, lgb=False):
+    """
+    binary prediction between paragraphs whether there is a style change or not
+    :param task2_model: trained classifier
+    :param par_emb: generated paragraph embeddings
+    :param par_textf: generated paragraph text features
+    :param stacking: True if task2_model is stacking_ensemble classifier
+    :param lgb: True if task2_model is LightGBMClassifier
+    :return binary prediction for text-features
+    """
     assert not stacking
     par_textf_flat = []
     n_docs = len(par_textf)
@@ -133,6 +157,13 @@ def my_task2_binary_predictions_textf(task2_model,par_emb, par_textf, stacking=F
     return binary_preds
 
 def my_task2_final_authorship_predictions(task2_binary_preds, par_emb, par_textf):
+    """
+    final author paragraph mapping based on binary prediciton
+    :param task2_binary_preds: binary prediction of all paragraph pairs
+    :param par_emb: paragraph embeddings only for eval length of doc and par
+    :param par_textf: paragraph text-features only for eval length of doc and par
+    :return final author_paragraph predictions
+    """
     n_docs = len(par_emb)
     max_auth = 5
     final_preds = []

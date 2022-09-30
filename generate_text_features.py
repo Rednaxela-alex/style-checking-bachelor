@@ -19,6 +19,12 @@ from nltk import pos_tag
 from utilities import load_documents
 
 def count_occurence(check_word_list, word_list_all):
+    """
+    counts occurences for words in check_word_list in word_list_all
+    :param check_word_list: list of words to check number of occurences
+    :param word_list_all: dict with word as key and number as value
+    return total number of occurences
+    """
     num_count = 0
     for w in check_word_list:
         if w in word_list_all:
@@ -27,6 +33,12 @@ def count_occurence(check_word_list, word_list_all):
 
 
 def count_occurence_phrase(phrase_list, para):
+    """
+    counts occurence of phrase list in paragraph
+    :param phrase_list: list of phrases
+    :param para: count occurences phrases in para
+    return: total number of occurences
+    """
     num_count = 0
     for phrase in phrase_list:
         num_count += para.count(phrase)
@@ -34,6 +46,10 @@ def count_occurence_phrase(phrase_list, para):
 
 
 def extract_features(document):
+    """
+    extract paragraph-level-text-features for the document
+    :param document: document split into paragraphs
+    """
     feature_all = []
     for para in document:
         sent_list = sent_tokenize(para)
@@ -134,6 +150,10 @@ def extract_features(document):
 
 
 def generate_features(documents):
+    """
+    generates document- and paragraph-level-text-features for the documents
+    :param documents: documents split into paragraphs
+    """
     features_per_document = []
     features_per_paragraph = []
 

@@ -11,10 +11,18 @@ from utilities_task3 import task3_load_cases
 from utilities import lgbm_macro_f1
 
 
-def tune_lgbm(x_train, y_train, x_test, y_test, save_as):
+def tune_lgbm(x_train, y_train, x_val, y_val, save_as):
+    """
+    tunes the LightGBM with the optuna library and saves the best performing model
+    :param x_train: training data
+    :param y_train: labels for the training data
+    :param x_val: validation data
+    :param y_val: labels for the validation data
+    :param save_as: name how model is saved
+    """
 
     train_ds = lgb.Dataset(x_train, label=y_train)
-    val_ds = lgb.Dataset(x_test, label=y_test)
+    val_ds = lgb.Dataset(x_val, label=y_val)
 
     opt_params = {
         "seed": 0,

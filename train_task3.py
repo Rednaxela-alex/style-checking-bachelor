@@ -68,11 +68,11 @@ lgb_params_comb={'seed': 0,
 'min_child_samples': 10,
 'num_iterations': 2500}
 
-"""
-Methods for training for task 3 for the Sytle Change Detection Task at PAN 2022
-"""
-
 def task3_lgbm(feature):
+    """
+    training LightGBMClassifier for task3 on training dataset 3
+    :param feature: string to choose to load embeddings, text-features or a combination
+    """
     if(feature == "textf"):
         x_train, y_train, x_val, y_val = task3_load_cases(feature="textf", shuffle=False)
         lgb_params = lgb_params_textf
@@ -116,6 +116,10 @@ def task3_lgbm(feature):
         pickle.dump(model, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 def task3_rf(feature):
+    """
+    training random forest classifier for task3 on training dataset 3
+    :param feature: string to choose to load embeddings, text-features or a combination
+    """
     if(feature == "textf"):
         x_train, y_train, x_val, y_val = task3_load_cases(feature="textf", shuffle=False)
         rf_params = rf_params_textf
@@ -157,6 +161,10 @@ def task3_rf(feature):
         pickle.dump(model, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 def task3_stacking_sklearn(feature):
+    """
+    training stacking classifier from the sklearn library for task3 on training dataset 3
+    :param feature: string to choose to load embeddings, text-features or a combination
+    """
     if(feature == "textf"):
         x_train, y_train, x_val, y_val = task3_load_cases(feature="textf", shuffle=False)
         lgb_params = lgb_params_textf
@@ -208,13 +216,14 @@ def task3_stacking_sklearn(feature):
     with open(f'./saved_models/task3/task3_sklearn_{feature}_{round(f1 * 100)}_{end-start}.pickle', 'wb') as handle:
         pickle.dump(model, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
-"""
-training method for the stacking ensemble from 
-Eivind Strom avaiable in:
-https://github.com/eivistr/pan21-style-change-detection-stacking-ensemble
-"""
+
 
 def task3_stacking():
+    """
+    training method for the stacking ensemble for training on train dataset 3
+    from  Eivind Strom avaiable in:
+    https://github.com/eivistr/pan21-style-change-detection-stacking-ensemble
+    """
     x_train_textf, y_train, x_val_textf, y_val = task3_load_cases(feature="textf", shuffle=False)
     x_train_emb, _, x_val_emb, _ = task3_load_cases(feature="emb", shuffle=False)
 

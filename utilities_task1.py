@@ -20,13 +20,14 @@ PAR_EMB_VAL_FOR_TASK1 = './features/dataset1/par_emb_val.pickle'
 PAR_TEXTF_TRAIN_FOR_TASK1 = './features/dataset1/par_textf_train.pickle'
 PAR_TEXTF_VAL_FOR_TASK1 = './features/dataset1/par_textf_val.pickle'
 
-"""
-loading samples and assigning labels to it
-"""
-
 def task1_load_cases(feature, shuffle=False, seed=0):
-
-
+     """
+    loading samples by comparing each parapgraph to eachother and assigning labels to it
+    :param feature: string whether to load embeddings or text features
+    :param shuffle: return shuffled train and val data
+    :param seed: seed for random_state relevant for shuffeling
+    :return labeled training and validation data
+    """
     if feature == "emb":
         path_train = PAR_EMB_TRAIN_FOR_TASK1
         path_val = PAR_EMB_VAL_FOR_TASK1
@@ -64,12 +65,17 @@ def task1_load_cases(feature, shuffle=False, seed=0):
         x_val, y_val = sklearn.utils.shuffle(x_val, y_val, random_state=seed)
     return x_train, y_train, x_val, y_val
 
-"""
-loading samples and adding labels to it,
-not only consecutive paragraphs are relevant -> each paragraphcombination is a sample
-"""
+
 
 def task1_load_cases_comparing_each_paragraph(feature, shuffle=False, seed=0):
+    """
+    loading samples and adding labels to it,
+    not only consecutive paragraphs are relevant but each paragraphpair is a sample
+    :param feature: string whether to load embeddings or text features
+    :param shuffle: return shuffled train and val data
+    :param seed: seed for random_state relevant for shuffeling
+    :return labeled training and validation data
+    """
     if feature == "emb":
         path_train = PAR_EMB_TRAIN_FOR_TASK1
         path_val = PAR_EMB_VAL_FOR_TASK1
@@ -107,11 +113,16 @@ def task1_load_cases_comparing_each_paragraph(feature, shuffle=False, seed=0):
         x_val, y_val = sklearn.utils.shuffle(x_val, y_val, random_state=seed)
     return x_train, y_train, x_val, y_val
 
-"""
-Methods for predicting consecutive paragraphs
-"""
-
 def my_task1_parchange_predictions_emb(task1_model, par_textf, par_emb,stacking=False, lgb=False):
+    """
+    binary prediction between paragraphs whether there is a style change or not
+    :param task1_model: trained classifier
+    :param par_emb: generated paragraph embeddings
+    :param par_textf: generated paragraph text features
+    :param stacking: True if task1_model is stacking_ensemble classifier
+    :param lgb: True if task1_model is LightGBMClassifier
+    :return binary prediction for paragraph embeddings
+    """
     assert not stacking
     final_preds = []
     n_docs = len(par_emb)
@@ -142,6 +153,15 @@ def my_task1_parchange_predictions_emb(task1_model, par_textf, par_emb,stacking=
     return final_preds
 
 def my_task1_parchange_predictions_textf(task1_model,  par_textf, par_emb,stacking=False, lgb=False):
+    """
+    binary prediction between paragraphs whether there is a style change or not
+    :param task1_model: trained classifier
+    :param par_emb: generated paragraph embeddings
+    :param par_textf: generated paragraph text features
+    :param stacking: True if task1_model is stacking_ensemble classifier
+    :param lgb: True if task1_model is LightGBMClassifier
+    :return binary prediction for paragraph text-features
+    """
     assert not stacking
     final_preds = []
     n_docs = len(par_textf)
@@ -172,6 +192,15 @@ def my_task1_parchange_predictions_textf(task1_model,  par_textf, par_emb,stacki
     return final_preds
 
 def my_task1_parchange_predictions_comb(task1_model, par_textf, par_emb, stacking=False, lgb=False):
+    """
+    binary prediction between paragraphs whether there is a style change or not
+    :param task1_model: trained classifier
+    :param par_emb: generated paragraph embeddings
+    :param par_textf: generated paragraph text features
+    :param stacking: True if task1_model is stacking_ensemble classifier
+    :param lgb: True if task1_model is LightGBMClassifier
+    :return binary prediction for combined paragraph text-features and embeddings
+    """
     assert not (lgb and stacking) #both cant be true
 
     final_preds = []

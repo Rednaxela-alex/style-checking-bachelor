@@ -24,6 +24,13 @@ np.random.seed(0)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def embed_sentence(sentence, tokenizer, model):
+    """
+    transforms a sentence into an embedding on the base of the loaded BERT tokenizer and model
+    :param sentence: sentence to transform
+    :param tokenizer: loaded BERT tokenizer
+    :param model: loaded BERT model
+    :return sentence-level-embedding
+    """
     # Tokenize input
     sentence = tokenizer.tokenize("[CLS] " + sentence + " [SEP]")
 
@@ -51,7 +58,10 @@ def embed_sentence(sentence, tokenizer, model):
 
 
 def generate_embeddings(documents):
-
+    """
+    generates paragraph- and document-level-embeddings for the documents
+    :param documents: documents split into paragraphs
+    """
     tokenizer = BertTokenizer.from_pretrained('bert-base-cased')
     model = BertModel.from_pretrained('bert-base-cased').to(device)
     model.eval()
